@@ -2,1996 +2,2241 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>MuscleWeb</title>
+<title>MuscleWeb – 3D Anatomie</title>
 
 <style>
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 html, body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #080b10;
-  color: #f2f4f7;
-  font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Inter, Arial, sans-serif;
+    background: #0b0d10;
+    color: #f3f4f6;
 }
 
-button,
-input {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
+button, input {
+    font: inherit;
 }
 
 #app {
-  width: 100%;
-  height: 100%;
-  display: flex;
+    width: 100%;
+    height: 100%;
+    display: flex;
 }
 
 /* SIDEBAR */
 
 #sidebar {
-  width: 300px;
-  min-width: 300px;
-  height: 100%;
-  background: #0e1218;
-  border-right: 1px solid #252c35;
-  display: flex;
-  flex-direction: column;
-  z-index: 20;
+    width: 290px;
+    height: 100%;
+    background: #111419;
+    border-right: 1px solid #252a31;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
 }
 
 .logo {
-  padding: 22px 20px 18px;
-  border-bottom: 1px solid #252c35;
+    padding: 24px 22px 18px;
+    border-bottom: 1px solid #252a31;
 }
 
-.logo h1 {
-  margin: 0;
-  font-size: 23px;
+.logo-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
-.logo p {
-  margin: 6px 0 0;
-  color: #7d8795;
-  font-size: 12px;
+.logo-subtitle {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #858c96;
 }
 
 .search {
-  padding: 15px;
-  border-bottom: 1px solid #252c35;
+    padding: 15px;
+    border-bottom: 1px solid #252a31;
 }
 
 .search input {
-  width: 100%;
-  padding: 11px 13px;
-  border-radius: 8px;
-  border: 1px solid #303946;
-  outline: none;
-  background: #151a22;
-  color: white;
+    width: 100%;
+    height: 40px;
+    padding: 0 13px;
+    border-radius: 8px;
+    border: 1px solid #303640;
+    outline: none;
+    background: #191d23;
+    color: white;
 }
 
 .search input:focus {
-  border-color: #647184;
+    border-color: #59636f;
 }
 
-.section-title {
-  padding: 16px 15px 8px;
-  color: #788392;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.categories {
+    padding: 12px;
+    overflow-y: auto;
 }
 
-.groups {
-  padding: 0 10px;
+.category {
+    width: 100%;
+    padding: 11px 13px;
+    margin-bottom: 4px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: #b9bec6;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.15s;
 }
 
-.group {
-  width: 100%;
-  text-align: left;
-  border: 0;
-  background: transparent;
-  color: #b9c1cc;
-  padding: 10px 12px;
-  border-radius: 7px;
-  margin-bottom: 2px;
+.category:hover {
+    background: #1b2027;
+    color: white;
 }
 
-.group:hover,
-.group.active {
-  background: #1b222c;
-  color: white;
+.category.active {
+    background: #252b33;
+    color: white;
 }
 
-#muscleList {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0 10px 20px;
+.category-title {
+    font-size: 14px;
+    font-weight: 600;
 }
 
-.muscle {
-  padding: 9px 11px;
-  border-radius: 7px;
-  margin-bottom: 3px;
-  color: #b7c0cc;
-  font-size: 13px;
+.category-count {
+    float: right;
+    color: #747c87;
+    font-size: 12px;
 }
 
-.muscle:hover {
-  background: #1a2029;
-  color: white;
+/* MAIN */
+
+#main {
+    flex: 1;
+    height: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* TOP BAR */
+
+#topbar {
+    height: 65px;
+    flex-shrink: 0;
+    border-bottom: 1px solid #252a31;
+    background: #101318;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+}
+
+.top-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.top-actions {
+    display: flex;
+    gap: 7px;
+}
+
+.control {
+    height: 36px;
+    min-width: 36px;
+    padding: 0 11px;
+    border: 1px solid #303640;
+    border-radius: 7px;
+    background: #181c22;
+    color: #c9ced5;
+    cursor: pointer;
+}
+
+.control:hover {
+    background: #222830;
+    color: white;
+}
+
+.control.active {
+    background: #303740;
+    color: white;
 }
 
 /* VIEWER */
 
 #viewer {
-  position: relative;
-  flex: 1;
-  min-width: 0;
-  height: 100%;
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at center, #1b2026 0%, #101318 45%, #090b0e 100%);
 }
 
-#canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.topbar {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  right: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  z-index: 5;
-  pointer-events: none;
-}
-
-.topbar > * {
-  pointer-events: auto;
-}
-
-.status {
-  background: rgba(12,16,22,.92);
-  border: 1px solid #303945;
-  padding: 9px 12px;
-  border-radius: 8px;
-  color: #aeb8c5;
-  font-size: 12px;
-}
-
-.controls {
-  display: flex;
-  gap: 6px;
-}
-
-.control {
-  border: 1px solid #303945;
-  background: rgba(14,18,24,.94);
-  color: #cbd2db;
-  padding: 8px 11px;
-  border-radius: 7px;
-}
-
-.control:hover {
-  background: #202832;
-  color: white;
-}
-
-/* INFO */
-
-#info {
-  display: none;
-  position: absolute;
-  right: 18px;
-  bottom: 18px;
-  width: 290px;
-  background: rgba(14,18,24,.97);
-  border: 1px solid #303945;
-  border-radius: 10px;
-  padding: 17px;
-  z-index: 10;
-}
-
-#info.show {
-  display: block;
-}
-
-#info h2 {
-  margin: 0 0 5px;
-  font-size: 18px;
-}
-
-#infoType {
-  color: #7f8a99;
-  font-size: 12px;
-  margin-bottom: 15px;
-}
-
-.exercise-title {
-  color: #7f8a99;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 7px;
-}
-
-.exercise {
-  background: #181e26;
-  padding: 9px;
-  border-radius: 6px;
-  margin-bottom: 5px;
-  font-size: 12px;
-}
-
-#closeInfo {
-  position: absolute;
-  top: 8px;
-  right: 9px;
-  border: 0;
-  background: transparent;
-  color: #788392;
-  font-size: 19px;
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 /* LOADING */
 
 #loading {
-  position: absolute;
-  inset: 0;
-  background: #080b10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  z-index: 50;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: #0b0d10;
+    z-index: 20;
 }
 
-#loading h2 {
-  margin: 0 0 8px;
+.loading-title {
+    font-size: 20px;
+    font-weight: 600;
 }
 
-#loadingText {
-  margin: 0;
-  color: #7e8997;
-  font-size: 13px;
-  text-align: center;
+.loading-text {
+    margin-top: 8px;
+    color: #858c96;
+    font-size: 13px;
 }
 
 .progress {
-  width: 220px;
-  height: 3px;
-  background: #202631;
-  border-radius: 4px;
-  margin-top: 18px;
-  overflow: hidden;
+    margin-top: 18px;
+    width: min(360px, 70vw);
+    height: 5px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #262b31;
 }
 
-#progressBar {
-  width: 0%;
-  height: 100%;
-  background: #d9dee5;
-  transition: width .15s;
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: #e5e7eb;
+    transition: width 0.15s;
+}
+
+#error {
+    display: none;
+    max-width: 600px;
+    padding: 25px;
+    text-align: center;
+}
+
+#error-title {
+    color: #ff7d7d;
+    font-size: 19px;
+    font-weight: 600;
+}
+
+#error-message {
+    margin-top: 12px;
+    color: #aeb4bd;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* VIEW CONTROLS */
+
+.viewer-controls {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 5;
+}
+
+.viewer-button {
+    width: 42px;
+    height: 42px;
+    border-radius: 7px;
+    border: 1px solid #343a42;
+    background: rgba(20, 24, 29, 0.92);
+    color: #d9dde2;
+    cursor: pointer;
+}
+
+.viewer-button:hover {
+    background: #252b32;
+    color: white;
+}
+
+/* INFO PANEL */
+
+#info {
+    position: absolute;
+    left: 18px;
+    bottom: 18px;
+    width: 290px;
+    max-width: calc(100% - 90px);
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid #303640;
+    background: rgba(16, 19, 24, 0.94);
+    backdrop-filter: blur(10px);
+    display: none;
+    z-index: 5;
+}
+
+.info-name {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.info-region {
+    margin-top: 4px;
+    color: #8d95a0;
+    font-size: 12px;
+}
+
+.info-description {
+    margin-top: 12px;
+    color: #b9bec6;
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.info-actions {
+    display: flex;
+    gap: 7px;
+    margin-top: 13px;
+}
+
+.info-button {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #353b43;
+    border-radius: 6px;
+    background: #1c2128;
+    color: #dce0e5;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.info-button:hover {
+    background: #282e36;
+}
+
+/* LABELS */
+
+.muscle-label {
+    position: absolute;
+    padding: 4px 7px;
+    border-radius: 5px;
+    border: 1px solid #414852;
+    background: rgba(10, 12, 15, 0.88);
+    color: white;
+    font-size: 10px;
+    pointer-events: none;
+    white-space: nowrap;
+    display: none;
+}
+
+/* RIGHT PANEL */
+
+#rightPanel {
+    width: 300px;
+    height: 100%;
+    border-left: 1px solid #252a31;
+    background: #111419;
+    display: flex;
+    flex-direction: column;
+    z-index: 8;
+}
+
+.panel-header {
+    padding: 20px;
+    border-bottom: 1px solid #252a31;
+}
+
+.panel-title {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.panel-subtitle {
+    margin-top: 5px;
+    color: #7f8791;
+    font-size: 12px;
+}
+
+.muscle-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.muscle-item {
+    width: 100%;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: #b9bec6;
+    text-align: left;
+    padding: 10px;
+    cursor: pointer;
+    margin-bottom: 2px;
+}
+
+.muscle-item:hover {
+    background: #1b2027;
+    color: white;
+}
+
+.muscle-item.selected {
+    background: #293039;
+    color: white;
+}
+
+.muscle-item-name {
+    font-size: 13px;
+}
+
+.muscle-item-type {
+    margin-top: 3px;
+    color: #707985;
+    font-size: 10px;
+}
+
+/* EXERCISES */
+
+#exercisePanel {
+    border-top: 1px solid #252a31;
+    padding: 15px;
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+.exercise-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 9px;
+}
+
+.exercise {
+    padding: 8px 0;
+    color: #aeb5be;
+    font-size: 12px;
+    border-bottom: 1px solid #20252b;
+}
+
+.exercise:last-child {
+    border-bottom: 0;
 }
 
 /* MOBILE */
 
 #mobileMenu {
-  display: none;
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  z-index: 30;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  border: 1px solid #303945;
-  background: #10151c;
-  color: white;
+    display: none;
 }
 
-@media(max-width:800px) {
+@media (max-width: 900px) {
 
-  #sidebar {
-    position: absolute;
-    left: 0;
-    top: 0;
-    transform: translateX(-100%);
-    transition: transform .2s;
-    box-shadow: 10px 0 30px rgba(0,0,0,.4);
-  }
+    #sidebar {
+        position: fixed;
+        left: -300px;
+        top: 0;
+        transition: left 0.2s;
+        box-shadow: 10px 0 30px rgba(0,0,0,0.4);
+    }
 
-  #sidebar.open {
-    transform: translateX(0);
-  }
+    #sidebar.open {
+        left: 0;
+    }
 
-  #mobileMenu {
-    display: block;
-  }
+    #rightPanel {
+        position: fixed;
+        right: -310px;
+        top: 0;
+        transition: right 0.2s;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.4);
+    }
 
-  .topbar {
-    left: 65px;
-  }
+    #rightPanel.open {
+        right: 0;
+    }
 
-  .status {
-    display: none;
-  }
+    #mobileMenu {
+        display: block;
+    }
 
-  #info {
-    bottom: 20px;
-    left: 15px;
-    right: 15px;
-    width: auto;
-  }
+    .top-title {
+        display: none;
+    }
 
-  .controls .control:nth-child(n+4) {
-    display: none;
-  }
+    #topbar {
+        justify-content: space-between;
+    }
 }
 </style>
-
-
-<!-- THREE.JS IMPORT MAP -->
-
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
-  }
-}
-</script>
-
 </head>
 
 <body>
 
 <div id="app">
 
-  <aside id="sidebar">
+    <!-- LINKES MENÜ -->
 
-    <div class="logo">
-      <h1>MuscleWeb</h1>
-      <p>3D Muscular Anatomy</p>
-    </div>
+    <aside id="sidebar">
 
-    <div class="search">
-      <input
-        id="search"
-        type="text"
-        placeholder="Muskel suchen..."
-      >
-    </div>
+        <div class="logo">
+            <div class="logo-title">MuscleWeb</div>
+            <div class="logo-subtitle">3D Muskulatur & Training</div>
+        </div>
 
-    <div class="section-title">
-      Körperregionen
-    </div>
+        <div class="search">
+            <input
+                id="search"
+                type="text"
+                placeholder="Muskel suchen..."
+                autocomplete="off"
+            >
+        </div>
 
-    <div class="groups">
+        <div class="categories">
 
-      <button class="group active" data-group="all">
-        Ganzkörper
-      </button>
+            <button class="category active" data-region="Alle">
+                <span class="category-title">Ganzkörper</span>
+                <span class="category-count" id="count-Alle">0</span>
+            </button>
 
-      <button class="group" data-group="chest">
-        Brust
-      </button>
+            <button class="category" data-region="Brust">
+                <span class="category-title">Brust</span>
+                <span class="category-count" id="count-Brust">0</span>
+            </button>
 
-      <button class="group" data-group="back">
-        Rücken
-      </button>
+            <button class="category" data-region="Rücken">
+                <span class="category-title">Rücken</span>
+                <span class="category-count" id="count-Rücken">0</span>
+            </button>
 
-      <button class="group" data-group="shoulders">
-        Schultern
-      </button>
+            <button class="category" data-region="Schultern">
+                <span class="category-title">Schultern</span>
+                <span class="category-count" id="count-Schultern">0</span>
+            </button>
 
-      <button class="group" data-group="arms">
-        Arme
-      </button>
+            <button class="category" data-region="Arme">
+                <span class="category-title">Arme</span>
+                <span class="category-count" id="count-Arme">0</span>
+            </button>
 
-      <button class="group" data-group="abs">
-        Bauch
-      </button>
+            <button class="category" data-region="Bauch">
+                <span class="category-title">Bauch</span>
+                <span class="category-count" id="count-Bauch">0</span>
+            </button>
 
-      <button class="group" data-group="glutes">
-        Gesäß
-      </button>
+            <button class="category" data-region="Beine">
+                <span class="category-title">Beine</span>
+                <span class="category-count" id="count-Beine">0</span>
+            </button>
 
-      <button class="group" data-group="legs">
-        Beine
-      </button>
+            <button class="category" data-region="Gesäß">
+                <span class="category-title">Gesäß</span>
+                <span class="category-count" id="count-Gesäß">0</span>
+            </button>
 
-    </div>
-
-    <div class="section-title">
-      Muskeln
-    </div>
-
-    <div id="muscleList"></div>
-
-  </aside>
-
-
-  <main id="viewer">
-
-    <button id="mobileMenu">
-      Menü
-    </button>
-
-    <div class="topbar">
-
-      <div class="status" id="status">
-        Modell wird geladen...
-      </div>
-
-      <div class="controls">
-
-        <button class="control" id="front">
-          Vorne
-        </button>
-
-        <button class="control" id="back">
-          Hinten
-        </button>
-
-        <button class="control" id="side">
-          Seite
-        </button>
-
-        <button class="control" id="reset">
-          Reset
-        </button>
-
-      </div>
-
-    </div>
+        </div>
+    </aside>
 
 
-    <canvas id="canvas"></canvas>
+    <!-- HAUPTBEREICH -->
+
+    <main id="main">
+
+        <header id="topbar">
+
+            <button class="control" id="mobileMenu">
+                Menü
+            </button>
+
+            <div class="top-title" id="currentRegion">
+                Ganzkörper
+            </div>
+
+            <div class="top-actions">
+
+                <button class="control" id="front">
+                    Vorne
+                </button>
+
+                <button class="control" id="back">
+                    Hinten
+                </button>
+
+                <button class="control" id="side">
+                    Seite
+                </button>
+
+                <button class="control" id="reset">
+                    Reset
+                </button>
+
+                <button class="control" id="labels">
+                    Beschriftungen
+                </button>
+
+                <button class="control" id="rightMenu">
+                    Muskeln
+                </button>
+
+            </div>
+
+        </header>
 
 
-    <div id="info">
+        <section id="viewer">
 
-      <button id="closeInfo">
-        ×
-      </button>
+            <div id="loading">
 
-      <h2 id="infoName">
-        Muskel
-      </h2>
+                <div class="loading-title">
+                    3D-Modell wird geladen
+                </div>
 
-      <div id="infoType">
-        Anatomische Struktur
-      </div>
+                <div class="loading-text" id="loadingText">
+                    anatomy.glb wird geladen...
+                </div>
 
-      <div class="exercise-title">
-        Übungen
-      </div>
+                <div class="progress">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
 
-      <div id="exerciseList"></div>
+                <div id="error">
 
-    </div>
+                    <div id="error-title">
+                        Modell konnte nicht geladen werden
+                    </div>
+
+                    <div id="error-message"></div>
+
+                </div>
+
+            </div>
 
 
-    <div id="loading">
+            <div class="viewer-controls">
 
-      <h2>
-        MuscleWeb
-      </h2>
+                <button class="viewer-button" id="zoomIn">
+                    +
+                </button>
 
-      <p id="loadingText">
-        3D-Modell wird geladen...
-      </p>
+                <button class="viewer-button" id="zoomOut">
+                    −
+                </button>
 
-      <div class="progress">
-        <div id="progressBar"></div>
-      </div>
+                <button class="viewer-button" id="showAll">
+                    Alle
+                </button>
 
-    </div>
+            </div>
 
-  </main>
+
+            <div id="info">
+
+                <div class="info-name" id="infoName">
+                    Muskel
+                </div>
+
+                <div class="info-region" id="infoRegion">
+                    Region
+                </div>
+
+                <div class="info-description" id="infoDescription">
+                    Klicke auf einen Muskel, um ihn auszuwählen.
+                </div>
+
+                <div class="info-actions">
+
+                    <button class="info-button" id="isolate">
+                        Isolieren
+                    </button>
+
+                    <button class="info-button" id="hide">
+                        Ausblenden
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- RECHTES MENÜ -->
+
+    <aside id="rightPanel">
+
+        <div class="panel-header">
+
+            <div class="panel-title">
+                Muskeln
+            </div>
+
+            <div class="panel-subtitle" id="panelSubtitle">
+                Anatomische Strukturen
+            </div>
+
+        </div>
+
+        <div class="muscle-list" id="muscleList"></div>
+
+        <div id="exercisePanel">
+
+            <div class="exercise-title">
+                Übungen
+            </div>
+
+            <div id="exerciseList">
+                Wähle einen Muskel aus.
+            </div>
+
+        </div>
+
+    </aside>
 
 </div>
+
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+}
+</script>
 
 
 <script type="module">
 
 import * as THREE from "three";
-
-import {
-  OrbitControls
-} from "three/addons/controls/OrbitControls.js";
-
-import {
-  GLTFLoader
-} from "three/addons/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 
-/* ==================================================
-   MODEL URLs
-================================================== */
+/* ============================================================
+   GRUNDLAGEN
+============================================================ */
 
-const ANATOMY_URL =
-"https://cdn.jsdelivr.net/gh/JohanBellander/BodyExplorer@main/public/anatomy.glb";
+const viewer = document.getElementById("viewer");
 
-const SKELETON_URL =
-"https://cdn.jsdelivr.net/gh/JohanBellander/BodyExplorer@main/public/skeleton.glb";
+const scene = new THREE.Scene();
 
-
-/* ==================================================
-   ELEMENTS
-================================================== */
-
-const canvas =
-document.getElementById("canvas");
-
-const loading =
-document.getElementById("loading");
-
-const loadingText =
-document.getElementById("loadingText");
-
-const progressBar =
-document.getElementById("progressBar");
-
-const status =
-document.getElementById("status");
-
-const muscleList =
-document.getElementById("muscleList");
-
-const info =
-document.getElementById("info");
-
-const infoName =
-document.getElementById("infoName");
-
-const infoType =
-document.getElementById("infoType");
-
-const exerciseList =
-document.getElementById("exerciseList");
+scene.background = new THREE.Color(0x0b0d10);
 
 
-/* ==================================================
-   SCENE
-================================================== */
-
-const scene =
-new THREE.Scene();
-
-scene.background =
-new THREE.Color(0x080b10);
-
-
-const camera =
-new THREE.PerspectiveCamera(
-  35,
-  1,
-  0.1,
-  200
+const camera = new THREE.PerspectiveCamera(
+    35,
+    viewer.clientWidth / viewer.clientHeight,
+    0.01,
+    1000
 );
 
-
-camera.position.set(
-  0,
-  0,
-  36
-);
+camera.position.set(0, 1.5, 3.8);
 
 
-const renderer =
-new THREE.WebGLRenderer({
-  canvas,
-  antialias: true,
-  powerPreference: "high-performance"
+const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: false
 });
 
-
 renderer.setPixelRatio(
-  Math.min(window.devicePixelRatio, 2)
+    Math.min(window.devicePixelRatio, 2)
 );
 
-renderer.outputColorSpace =
-THREE.SRGBColorSpace;
-
-
-function resize() {
-
-  const width =
-    document.getElementById("viewer")
-      .clientWidth;
-
-  const height =
-    document.getElementById("viewer")
-      .clientHeight;
-
-  camera.aspect =
-    width / height;
-
-  camera.updateProjectionMatrix();
-
-  renderer.setSize(
-    width,
-    height,
-    false
-  );
-
-}
-
-resize();
-
-window.addEventListener(
-  "resize",
-  resize
+renderer.setSize(
+    viewer.clientWidth,
+    viewer.clientHeight
 );
 
+renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-/* ==================================================
-   LIGHT
-================================================== */
+renderer.shadowMap.enabled = true;
 
-scene.add(
-  new THREE.HemisphereLight(
+viewer.appendChild(renderer.domElement);
+
+
+/* ============================================================
+   LICHT
+============================================================ */
+
+const ambient = new THREE.HemisphereLight(
     0xffffff,
-    0x202733,
-    2.2
-  )
+    0x20242a,
+    2.4
 );
 
+scene.add(ambient);
 
-const light1 =
-new THREE.DirectionalLight(
-  0xffffff,
-  3
+
+const keyLight = new THREE.DirectionalLight(
+    0xffffff,
+    3.2
 );
 
-light1.position.set(
-  5,
-  8,
-  8
+keyLight.position.set(
+    3,
+    5,
+    5
 );
 
-scene.add(light1);
+keyLight.castShadow = true;
+
+scene.add(keyLight);
 
 
-const light2 =
-new THREE.DirectionalLight(
-  0xb8c9df,
-  1.3
+const fillLight = new THREE.DirectionalLight(
+    0xffffff,
+    1.5
 );
 
-light2.position.set(
-  -5,
-  4,
-  4
+fillLight.position.set(
+    -4,
+    2,
+    3
 );
 
-scene.add(light2);
+scene.add(fillLight);
 
 
-const light3 =
-new THREE.DirectionalLight(
-  0xffffff,
-  1.4
+const backLight = new THREE.DirectionalLight(
+    0xffffff,
+    1.8
 );
 
-light3.position.set(
-  0,
-  5,
-  -8
+backLight.position.set(
+    0,
+    4,
+    -5
 );
 
-scene.add(light3);
+scene.add(backLight);
 
 
-/* ==================================================
-   ORBIT CONTROLS
-================================================== */
+/* ============================================================
+   CONTROLS
+============================================================ */
 
-const controls =
-new OrbitControls(
-  camera,
-  renderer.domElement
+const controls = new OrbitControls(
+    camera,
+    renderer.domElement
 );
 
 controls.enableDamping = true;
-controls.dampingFactor = 0.06;
 
-controls.enablePan = true;
+controls.dampingFactor = 0.08;
 
-controls.minDistance = 8;
-controls.maxDistance = 80;
+controls.enablePan = false;
+
+controls.minDistance = 0.5;
+
+controls.maxDistance = 10;
 
 controls.target.set(
-  0,
-  0,
-  0
+    0,
+    1.3,
+    0
 );
 
-controls.update();
 
+/* ============================================================
+   VARIABLEN
+============================================================ */
 
-/* ==================================================
-   MATERIALS
-================================================== */
+let model = null;
 
-const muscleMaterial =
-new THREE.MeshStandardMaterial({
-
-  color: 0x9f3028,
-
-  roughness: 0.62,
-
-  metalness: 0,
-
-  side: THREE.DoubleSide
-
-});
-
-
-const tendonMaterial =
-new THREE.MeshStandardMaterial({
-
-  color: 0xe1d7c1,
-
-  roughness: 0.5,
-
-  metalness: 0,
-
-  side: THREE.DoubleSide
-
-});
-
-
-const boneMaterial =
-new THREE.MeshStandardMaterial({
-
-  color: 0xe6dfcf,
-
-  roughness: 0.6,
-
-  transparent: true,
-
-  opacity: 0.55,
-
-  depthWrite: false,
-
-  side: THREE.DoubleSide
-
-});
-
-
-const selectedMaterial =
-new THREE.MeshStandardMaterial({
-
-  color: 0xff8a72,
-
-  roughness: 0.45,
-
-  emissive: 0x44100b,
-
-  emissiveIntensity: 0.7,
-
-  side: THREE.DoubleSide
-
-});
-
-
-/* ==================================================
-   MODEL STORAGE
-================================================== */
-
-const body =
-new THREE.Group();
-
-const skeleton =
-new THREE.Group();
-
-scene.add(body);
-
-body.add(skeleton);
-
-
-let muscleMeshes = [];
+let meshes = [];
 
 let selectedMesh = null;
 
+let selectedOriginalMaterial = null;
 
-/* ==================================================
-   NAME / GROUP HELPERS
-================================================== */
+let labelsVisible = false;
 
-function readableName(name) {
+let currentRegion = "Alle";
 
-  if (!name) {
-    return "Anatomische Struktur";
-  }
+let isolated = false;
 
-  return name
+let modelCenter = new THREE.Vector3();
 
-    .replaceAll("_", " ")
-
-    .replace(/\s+/g, " ")
-
-    .trim()
-
-    .replace(/\b\w/g, c =>
-      c.toUpperCase()
-    );
-
-}
+let modelSize = new THREE.Vector3();
 
 
-function classify(name) {
+/* ============================================================
+   REGIONEN
+============================================================ */
 
-  const n =
-    name.toLowerCase();
+const regionKeywords = {
 
+    Brust: [
+        "pect",
+        "chest",
+        "thorax",
+        "mamm",
+        "pector",
+        "stern"
+    ],
 
-  if (
-    n.includes("pector") ||
-    n.includes("breast")
-  ) return "chest";
+    Rücken: [
+        "lat",
+        "dorsi",
+        "trapez",
+        "rhombo",
+        "erector",
+        "multifid",
+        "back",
+        "spine",
+        "vertebr"
+    ],
 
+    Schultern: [
+        "deltoid",
+        "delto",
+        "supraspin",
+        "infraspin",
+        "teres",
+        "shoulder"
+    ],
 
-  if (
-    n.includes("latissimus") ||
-    n.includes("trapezius") ||
-    n.includes("rhomboid") ||
-    n.includes("erector") ||
-    n.includes("multifidus")
-  ) return "back";
+    Arme: [
+        "biceps",
+        "triceps",
+        "brachial",
+        "brachio",
+        "forearm",
+        "flexor",
+        "extensor",
+        "pronator",
+        "supinator",
+        "hand",
+        "wrist"
+    ],
 
+    Bauch: [
+        "rectus",
+        "abdomin",
+        "oblique",
+        "transvers",
+        "quadratus",
+        "serratus"
+    ],
 
-  if (
-    n.includes("deltoid") ||
-    n.includes("supraspinatus") ||
-    n.includes("infraspinatus")
-  ) return "shoulders";
+    Beine: [
+        "quadriceps",
+        "quad",
+        "femor",
+        "hamstring",
+        "sartorius",
+        "tibial",
+        "gastrocn",
+        "soleus",
+        "adductor",
+        "gracilis",
+        "vastus",
+        "calf",
+        "leg",
+        "perone",
+        "fibular"
+    ],
 
-
-  if (
-    n.includes("biceps") ||
-    n.includes("triceps") ||
-    n.includes("brachialis") ||
-    n.includes("brachioradialis") ||
-    n.includes("flexor") ||
-    n.includes("extensor")
-  ) return "arms";
-
-
-  if (
-    n.includes("rectus abdominis") ||
-    n.includes("oblique") ||
-    n.includes("abdominal") ||
-    n.includes("transversus")
-  ) return "abs";
-
-
-  if (
-    n.includes("gluteus")
-  ) return "glutes";
-
-
-  if (
-    n.includes("quadriceps") ||
-    n.includes("vastus") ||
-    n.includes("femor") ||
-    n.includes("hamstring") ||
-    n.includes("sartorius") ||
-    n.includes("gastrocnemius") ||
-    n.includes("soleus") ||
-    n.includes("tibialis") ||
-    n.includes("adductor")
-  ) return "legs";
-
-
-  return "all";
-
-}
-
-
-/* ==================================================
-   EXERCISES
-================================================== */
-
-const exerciseData = {
-
-  chest: [
-    "Bankdrücken",
-    "Schrägbankdrücken",
-    "Dips",
-    "Liegestütze"
-  ],
-
-  back: [
-    "Klimmzüge",
-    "Latzug",
-    "Rudern",
-    "Kreuzheben"
-  ],
-
-  shoulders: [
-    "Schulterdrücken",
-    "Seitheben",
-    "Reverse Flys"
-  ],
-
-  arms: [
-    "Bizepscurls",
-    "Hammer Curls",
-    "Trizepsdrücken",
-    "French Press"
-  ],
-
-  abs: [
-    "Crunches",
-    "Hanging Leg Raises",
-    "Cable Crunches",
-    "Plank"
-  ],
-
-  glutes: [
-    "Hip Thrusts",
-    "Glute Bridges",
-    "Bulgarian Split Squats"
-  ],
-
-  legs: [
-    "Kniebeugen",
-    "Beinpresse",
-    "Beinbeuger",
-    "Beinstrecker",
-    "Wadenheben"
-  ]
+    Gesäß: [
+        "glute",
+        "piriform",
+        "buttock"
+    ]
 
 };
 
 
-/* ==================================================
-   IMPORTANT:
-   BODYEXPLORER COORDINATE TRANSFORM
-================================================== */
+function detectRegion(name) {
 
-function transformGeometry(
-  geometry,
-  center,
-  scaleFactor
-) {
+    const n = name.toLowerCase();
 
-  const positions =
-    geometry.getAttribute(
-      "position"
-    );
+    for (const region in regionKeywords) {
 
+        for (const keyword of regionKeywords[region]) {
 
-  if (positions) {
-
-    const array =
-      positions.array;
-
-
-    for (
-      let i = 0;
-      i < array.length;
-      i += 3
-    ) {
-
-      const x =
-        array[i];
-
-      const y =
-        array[i + 1];
-
-      const z =
-        array[i + 2];
-
-
-      /*
-        BP3D:
-
-        X = left/right
-        Y = front/back
-        Z = bottom/top
-
-        Three.js:
-
-        X = left/right
-        Y = up
-        Z = front
-      */
-
-      array[i] =
-        (x - center.x)
-        * scaleFactor;
-
-      array[i + 1] =
-        (z - center.z)
-        * scaleFactor;
-
-      array[i + 2] =
-        -(y - center.y)
-        * scaleFactor;
-
-    }
-
-
-    positions.needsUpdate =
-      true;
-
-  }
-
-
-  const normals =
-    geometry.getAttribute(
-      "normal"
-    );
-
-
-  if (normals) {
-
-    const array =
-      normals.array;
-
-
-    for (
-      let i = 0;
-      i < array.length;
-      i += 3
-    ) {
-
-      const x =
-        array[i];
-
-      const y =
-        array[i + 1];
-
-      const z =
-        array[i + 2];
-
-
-      array[i] = x;
-
-      array[i + 1] = z;
-
-      array[i + 2] = -y;
-
-    }
-
-
-    normals.needsUpdate =
-      true;
-
-  }
-
-
-  geometry.computeBoundingBox();
-
-  geometry.computeBoundingSphere();
-
-}
-
-
-/* ==================================================
-   LOAD GLB
-================================================== */
-
-function loadGLB(
-  loader,
-  url,
-  progressStart,
-  progressEnd
-) {
-
-  return new Promise(
-    (resolve, reject) => {
-
-      loader.load(
-
-        url,
-
-        gltf => {
-
-          resolve(gltf);
-
-        },
-
-        event => {
-
-          if (
-            event.total &&
-            event.total > 0
-          ) {
-
-            const local =
-              event.loaded /
-              event.total;
-
-            const percent =
-              progressStart +
-              local *
-              (progressEnd -
-               progressStart);
-
-            progressBar.style.width =
-              percent + "%";
-
-            loadingText.textContent =
-              "3D-Modell wird geladen... " +
-              Math.round(percent) +
-              "%";
-
-          }
-
-        },
-
-        error => {
-
-          reject(error);
+            if (n.includes(keyword)) {
+                return region;
+            }
 
         }
 
-      );
-
     }
-  );
 
+    return "Sonstiges";
 }
 
 
-/* ==================================================
-   LOAD BODY
-================================================== */
+/* ============================================================
+   DEUTSCHE NAMEN
+============================================================ */
 
-async function loadBody() {
+const translations = {
 
-  try {
+    pectoralis: "Großer Brustmuskel",
+    pectoralismajor: "Großer Brustmuskel",
+    pectoralisminor: "Kleiner Brustmuskel",
 
-    const loader =
-      new GLTFLoader();
+    biceps: "Bizeps",
+    bicepsbrachii: "Bizeps",
 
+    triceps: "Trizeps",
+    tricepsbrachii: "Trizeps",
 
-    loadingText.textContent =
-      "Lade Anatomie...";
+    deltoid: "Deltamuskel",
 
+    trapezius: "Trapezmuskel",
 
-    /*
-      Load anatomy first.
-    */
+    latissimus: "Breiter Rückenmuskel",
 
-    const anatomyGLTF =
-      await loadGLB(
-        loader,
-        ANATOMY_URL,
-        0,
-        70
-      );
+    latissimusdorsi: "Breiter Rückenmuskel",
 
+    rectusabdominis: "Gerader Bauchmuskel",
 
-    const anatomyRoot =
-      anatomyGLTF.scene;
+    obliquus: "Schräger Bauchmuskel",
 
+    transversusabdominis: "Querer Bauchmuskel",
 
-    /*
-      Find original BP3D bounding box.
-    */
+    gluteusmaximus: "Großer Gesäßmuskel",
 
-    const anatomyBox =
-      new THREE.Box3()
-        .setFromObject(
-          anatomyRoot
-        );
+    gluteusmedius: "Mittlerer Gesäßmuskel",
 
+    quadriceps: "Vierköpfiger Oberschenkelmuskel",
 
-    const anatomyCenter =
-      anatomyBox.getCenter(
-        new THREE.Vector3()
-      );
+    rectusfemoris: "Gerader Oberschenkelmuskel",
 
+    sartorius: "Schneidermuskel",
 
-    const anatomySize =
-      anatomyBox.getSize(
-        new THREE.Vector3()
-      );
+    gastrocnemius: "Zwillingswadenmuskel",
 
+    soleus: "Schollenmuskel",
 
-    /*
-      The original BodyExplorer
-      uses approximately 30 units
-      as body height.
-    */
+    tibialisanterior: "Vorderer Schienbeinmuskel",
 
-    const targetHeight = 30;
+    brachialis: "Armbeuger",
 
+    brachioradialis: "Oberarm-Speichenmuskel",
 
-    const scaleFactor =
-      targetHeight /
-      anatomySize.z;
+    rhomboid: "Rautenmuskel",
 
+    erectorspinae: "Rückenstrecker",
 
-    /*
-      Process every anatomical mesh.
-    */
+    serratus: "Sägezahnmuskel"
 
-    let count = 0;
+};
 
 
-    anatomyRoot.traverse(
-      child => {
+function getGermanName(original) {
 
-        if (!child.isMesh)
-          return;
+    const clean = original
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "");
 
+    for (const key in translations) {
 
-        const geometry =
-          child.geometry.clone();
-
-
-        transformGeometry(
-          geometry,
-          anatomyCenter,
-          scaleFactor
-        );
-
-
-        const rawName =
-          child.name ||
-          "Anatomische Struktur";
-
-
-        const lower =
-          rawName.toLowerCase();
-
-
-        const isTendon =
-          lower.includes("tendon") ||
-          lower.includes("ligament") ||
-          lower.includes("retinaculum") ||
-          lower.includes("membrane");
-
-
-        const material =
-          isTendon
-            ? tendonMaterial
-            : muscleMaterial;
-
-
-        const mesh =
-          new THREE.Mesh(
-            geometry,
-            material
-          );
-
-
-        mesh.userData.rawName =
-          rawName;
-
-
-        mesh.userData.name =
-          readableName(
-            rawName
-          );
-
-
-        mesh.userData.group =
-          classify(
-            rawName
-          );
-
-
-        mesh.userData.originalMaterial =
-          material;
-
-
-        mesh.renderOrder = 1;
-
-
-        body.add(mesh);
-
-        muscleMeshes.push(mesh);
-
-        count++;
-
-      }
-    );
-
-
-    /*
-      Load skeleton too.
-    */
-
-    loadingText.textContent =
-      "Lade Skelett...";
-
-
-    try {
-
-      const skeletonGLTF =
-        await loadGLB(
-          loader,
-          SKELETON_URL,
-          70,
-          100
-        );
-
-
-      skeletonGLTF.scene.traverse(
-        child => {
-
-          if (!child.isMesh)
-            return;
-
-
-          const geometry =
-            child.geometry.clone();
-
-
-          transformGeometry(
-            geometry,
-            anatomyCenter,
-            scaleFactor
-          );
-
-
-          const bone =
-            new THREE.Mesh(
-              geometry,
-              boneMaterial
-            );
-
-
-          bone.renderOrder = 0;
-
-
-          skeleton.add(bone);
-
+        if (clean.includes(key)) {
+            return translations[key];
         }
-      );
-
-    } catch (skeletonError) {
-
-      console.log(
-        "Skelett konnte nicht geladen werden.",
-        skeletonError
-      );
 
     }
 
-
-    /*
-      Center body.
-    */
-
-    const finalBox =
-      new THREE.Box3()
-        .setFromObject(
-          body
-        );
+    return original
+        .replace(/_/g, " ")
+        .replace(/-/g, " ");
+}
 
 
-    const finalCenter =
-      finalBox.getCenter(
-        new THREE.Vector3()
-      );
+/* ============================================================
+   ÜBUNGEN
+============================================================ */
+
+const exercises = {
+
+    Brust: [
+        "Bankdrücken",
+        "Schrägbankdrücken",
+        "Liegestütze",
+        "Kabelzug-Fliegende"
+    ],
+
+    Rücken: [
+        "Klimmzüge",
+        "Latzug",
+        "Rudern",
+        "Kreuzheben"
+    ],
+
+    Schultern: [
+        "Schulterdrücken",
+        "Seitheben",
+        "Reverse Flys"
+    ],
+
+    Arme: [
+        "Bizepscurls",
+        "Hammercurls",
+        "Trizepsdrücken",
+        "French Press"
+    ],
+
+    Bauch: [
+        "Crunches",
+        "Beinheben",
+        "Plank",
+        "Kabel-Crunches"
+    ],
+
+    Beine: [
+        "Kniebeugen",
+        "Beinpresse",
+        "Beinstrecker",
+        "Beinbeuger",
+        "Wadenheben"
+    ],
+
+    Gesäß: [
+        "Hip Thrusts",
+        "Ausfallschritte",
+        "Bulgarian Split Squats"
+    ],
+
+    Sonstiges: [
+        "Keine Übungsdaten vorhanden."
+    ]
+
+};
 
 
-    body.position.sub(
-      finalCenter
-    );
+/* ============================================================
+   MATERIAL VERWALTUNG
+============================================================ */
 
+function createHighlightMaterial(mesh) {
 
-    /*
-      Build sidebar.
-    */
+    const material = mesh.material.clone();
 
-    buildMuscleList();
+    material.color = new THREE.Color(0xffffff);
 
+    material.emissive = new THREE.Color(0x555555);
 
-    status.textContent =
-      count +
-      " anatomische Strukturen";
+    material.emissiveIntensity = 0.65;
 
-
-    progressBar.style.width =
-      "100%";
-
-
-    loadingText.textContent =
-      "Fertig";
-
-
-    setTimeout(
-      () => {
-        loading.style.display =
-          "none";
-      },
-      500
-    );
-
-
-  } catch (error) {
-
-    console.error(
-      "MODEL ERROR:",
-      error
-    );
-
-
-    loadingText.innerHTML =
-      "Fehler beim Laden des 3D-Modells.<br>" +
-      "Bitte Seite einmal neu laden.";
-
-
-    status.textContent =
-      "Modell konnte nicht geladen werden";
-
-  }
+    return material;
 
 }
 
 
-/* ==================================================
-   SIDEBAR
-================================================== */
+function selectMesh(mesh) {
 
-let currentGroup = "all";
+    if (selectedMesh === mesh) {
+        return;
+    }
 
+    restoreSelected();
 
-function buildMuscleList() {
+    selectedMesh = mesh;
 
-  muscleList.innerHTML = "";
+    selectedOriginalMaterial = mesh.material;
 
+    mesh.material = createHighlightMaterial(mesh);
 
-  const search =
-    document
-      .getElementById("search")
-      .value
-      .toLowerCase()
-      .trim();
+    updateInfo(mesh);
 
+    updateMuscleListSelection(mesh);
 
-  const filtered =
-    muscleMeshes.filter(
-      mesh => {
-
-        const name =
-          mesh.userData.name
-            .toLowerCase();
+}
 
 
-        const raw =
-          mesh.userData.rawName
-            .toLowerCase();
+function restoreSelected() {
+
+    if (
+        selectedMesh &&
+        selectedOriginalMaterial
+    ) {
+
+        selectedMesh.material =
+            selectedOriginalMaterial;
+
+    }
+
+    selectedMesh = null;
+
+    selectedOriginalMaterial = null;
+
+}
 
 
-        const group =
-          mesh.userData.group;
+/* ============================================================
+   INFO
+============================================================ */
+
+function updateInfo(mesh) {
+
+    const panel =
+        document.getElementById("info");
+
+    const name =
+        document.getElementById("infoName");
+
+    const region =
+        document.getElementById("infoRegion");
+
+    const description =
+        document.getElementById("infoDescription");
+
+    const german =
+        getGermanName(mesh.name);
+
+    const detected =
+        detectRegion(mesh.name);
+
+    name.textContent = german;
+
+    region.textContent =
+        detected === "Sonstiges"
+            ? "Anatomische Struktur"
+            : detected;
+
+    description.textContent =
+        "Diese Struktur ist Teil des 3D-Anatomiemodells. Du kannst sie isolieren, ausblenden oder die Ansicht drehen, um ihre Lage besser zu untersuchen.";
+
+    panel.style.display = "block";
+
+    showExercises(detected);
+
+}
 
 
-        const correctGroup =
-          currentGroup === "all" ||
-          group === currentGroup;
+/* ============================================================
+   ÜBUNGEN ANZEIGEN
+============================================================ */
 
+function showExercises(region) {
 
-        const correctSearch =
-          !search ||
-          name.includes(search) ||
-          raw.includes(search);
+    const list =
+        document.getElementById("exerciseList");
 
+    const data =
+        exercises[region] ||
+        exercises.Sonstiges;
 
-        return (
-          correctGroup &&
-          correctSearch
-        );
+    list.innerHTML = "";
 
-      }
-    );
+    data.forEach(exercise => {
 
+        const div =
+            document.createElement("div");
 
-  /*
-    Limit sidebar rendering
-    for iPad performance.
-  */
+        div.className = "exercise";
 
-  filtered
-    .slice(0, 200)
-    .forEach(mesh => {
+        div.textContent = exercise;
 
-      const element =
-        document.createElement(
-          "div"
-        );
-
-
-      element.className =
-        "muscle";
-
-
-      element.textContent =
-        mesh.userData.name;
-
-
-      element.onclick =
-        () => {
-
-          selectMuscle(mesh);
-
-          focusMuscle(mesh);
-
-        };
-
-
-      muscleList.appendChild(
-        element
-      );
+        list.appendChild(div);
 
     });
 
 }
 
 
-/* ==================================================
-   SELECT MUSCLE
-================================================== */
+/* ============================================================
+   MODELL LADEN
+============================================================ */
 
-function selectMuscle(mesh) {
-
-  if (selectedMesh) {
-
-    selectedMesh.material =
-      selectedMesh.userData
-        .originalMaterial;
-
-  }
+const loader = new GLTFLoader();
 
 
-  selectedMesh = mesh;
+loader.load(
+
+    "./anatomy.glb",
+
+    function(gltf) {
+
+        model = gltf.scene;
+
+        scene.add(model);
 
 
-  mesh.material =
-    selectedMaterial;
+        /*
+         * BodyExplorer verwendet eine andere
+         * Koordinatenausrichtung.
+         *
+         * Deshalb wird das Modell hier entsprechend
+         * ausgerichtet.
+         */
+
+        model.rotation.x = -Math.PI / 2;
 
 
-  const name =
-    mesh.userData.name;
+        model.traverse(object => {
+
+            if (!object.isMesh) {
+                return;
+            }
+
+            object.castShadow = true;
+
+            object.receiveShadow = true;
 
 
-  infoName.textContent =
-    name;
+            if (object.material) {
+
+                if (
+                    object.material.isMeshStandardMaterial ||
+                    object.material.isMeshPhysicalMaterial
+                ) {
+
+                    object.material.roughness = 0.72;
+
+                    object.material.metalness = 0.0;
+
+                }
+
+            }
 
 
-  const group =
-    mesh.userData.group;
+            object.userData.originalMaterial =
+                object.material;
+
+            object.userData.region =
+                detectRegion(object.name);
+
+            meshes.push(object);
+
+        });
 
 
-  const groupNames = {
+        if (meshes.length === 0) {
 
-    chest: "Brust",
+            throw new Error(
+                "Das Modell wurde geladen, enthält aber keine 3D-Meshes."
+            );
 
-    back: "Rücken",
-
-    shoulders: "Schultern",
-
-    arms: "Arme",
-
-    abs: "Bauch",
-
-    glutes: "Gesäß",
-
-    legs: "Beine",
-
-    all: "Anatomische Struktur"
-
-  };
+        }
 
 
-  infoType.textContent =
-    groupNames[group] ||
-    "Anatomische Struktur";
+        fitModel();
 
 
-  exerciseList.innerHTML = "";
+        updateCounts();
+
+        updateMuscleList();
 
 
-  const exercises =
-    exerciseData[group];
+        document.getElementById("loading")
+            .style.display = "none";
+
+    },
 
 
-  if (exercises) {
+    function(progress) {
 
-    exercises.forEach(
-      exercise => {
+        if (progress.total) {
 
-        const div =
-          document.createElement(
-            "div"
-          );
+            const percent =
+                Math.round(
+                    progress.loaded /
+                    progress.total *
+                    100
+                );
 
-        div.className =
-          "exercise";
+            document.getElementById("progressBar")
+                .style.width =
+                percent + "%";
 
-        div.textContent =
-          exercise;
+            document.getElementById("loadingText")
+                .textContent =
+                "3D-Modell wird geladen – " +
+                percent +
+                "%";
 
-        exerciseList.appendChild(
-          div
+        } else {
+
+            document.getElementById("loadingText")
+                .textContent =
+                "3D-Modell wird geladen...";
+
+        }
+
+    },
+
+
+    function(error) {
+
+        console.error(
+            "Fehler beim Laden von anatomy.glb:",
+            error
         );
 
-      }
-    );
+        document.getElementById("loadingText")
+            .style.display = "none";
 
-  } else {
+        document.querySelector(".progress")
+            .style.display = "none";
 
-    const div =
-      document.createElement(
-        "div"
-      );
+        document.getElementById("error")
+            .style.display = "block";
 
-    div.className =
-      "exercise";
-
-    div.textContent =
-      "Für diese Struktur sind noch keine Übungen hinterlegt.";
-
-    exerciseList.appendChild(
-      div
-    );
-
-  }
-
-
-  info.classList.add(
-    "show"
-  );
-
-}
-
-
-/* ==================================================
-   FOCUS MUSCLE
-================================================== */
-
-function focusMuscle(mesh) {
-
-  const box =
-    new THREE.Box3()
-      .setFromObject(mesh);
-
-
-  const center =
-    box.getCenter(
-      new THREE.Vector3()
-    );
-
-
-  const size =
-    box.getSize(
-      new THREE.Vector3()
-    );
-
-
-  const maxSize =
-    Math.max(
-      size.x,
-      size.y,
-      size.z
-    );
-
-
-  controls.target.copy(
-    center
-  );
-
-
-  const distance =
-    Math.max(
-      maxSize * 4,
-      4
-    );
-
-
-  const direction =
-    new THREE.Vector3()
-      .subVectors(
-        camera.position,
-        controls.target
-      )
-      .normalize();
-
-
-  camera.position.copy(
-    center.clone()
-      .add(
-        direction.multiplyScalar(
-          distance
-        )
-      )
-  );
-
-
-  controls.update();
-
-}
-
-
-/* ==================================================
-   3D CLICK
-================================================== */
-
-const raycaster =
-new THREE.Raycaster();
-
-const mouse =
-new THREE.Vector2();
-
-
-renderer.domElement.addEventListener(
-  "pointerdown",
-  event => {
-
-    const rect =
-      renderer.domElement
-        .getBoundingClientRect();
-
-
-    mouse.x =
-      ((event.clientX -
-        rect.left) /
-        rect.width) *
-        2 - 1;
-
-
-    mouse.y =
-      -((event.clientY -
-        rect.top) /
-        rect.height) *
-        2 + 1;
-
-
-    raycaster.setFromCamera(
-      mouse,
-      camera
-    );
-
-
-    const hits =
-      raycaster.intersectObjects(
-        muscleMeshes,
-        false
-      );
-
-
-    if (hits.length) {
-
-      selectMuscle(
-        hits[0].object
-      );
+        document.getElementById("error-message")
+            .textContent =
+            "Die Datei anatomy.glb konnte nicht geladen werden. " +
+            "Prüfe, ob sie im gleichen GitHub-Ordner wie index.html liegt. " +
+            "Technischer Fehler: " +
+            (error?.message || error);
 
     }
 
-  }
 );
 
 
-/* ==================================================
-   CAMERA
-================================================== */
+/* ============================================================
+   MODELL ZENTRIEREN
+============================================================ */
 
-function frontView() {
+function fitModel() {
 
-  camera.position.set(
-    0,
-    0,
-    36
-  );
-
-  controls.target.set(
-    0,
-    0,
-    0
-  );
-
-  controls.update();
-
-}
+    if (!model) {
+        return;
+    }
 
 
-function backView() {
+    const box =
+        new THREE.Box3()
+            .setFromObject(model);
 
-  camera.position.set(
-    0,
-    0,
-    -36
-  );
+    const size =
+        box.getSize(new THREE.Vector3());
 
-  controls.target.set(
-    0,
-    0,
-    0
-  );
-
-  controls.update();
-
-}
+    const center =
+        box.getCenter(new THREE.Vector3());
 
 
-function sideView() {
-
-  camera.position.set(
-    36,
-    0,
-    0
-  );
-
-  controls.target.set(
-    0,
-    0,
-    0
-  );
-
-  controls.update();
-
-}
+    model.position.sub(center);
 
 
-function resetView() {
+    /*
+     * Nach dem Zentrieren erneut messen.
+     */
 
-  camera.position.set(
-    0,
-    0,
-    36
-  );
+    const box2 =
+        new THREE.Box3()
+            .setFromObject(model);
 
-  controls.target.set(
-    0,
-    0,
-    0
-  );
+    const size2 =
+        box2.getSize(new THREE.Vector3());
 
-  controls.update();
+    modelSize.copy(size2);
 
-}
-
-
-/* ==================================================
-   BUTTONS
-================================================== */
-
-document.getElementById(
-  "front"
-).onclick = frontView;
-
-
-document.getElementById(
-  "back"
-).onclick = backView;
-
-
-document.getElementById(
-  "side"
-).onclick = sideView;
-
-
-document.getElementById(
-  "reset"
-).onclick = resetView;
-
-
-document.getElementById(
-  "closeInfo"
-).onclick = () => {
-
-  info.classList.remove(
-    "show"
-  );
-
-};
-
-
-/* ==================================================
-   GROUP BUTTONS
-================================================== */
-
-document
-  .querySelectorAll(".group")
-  .forEach(button => {
-
-    button.onclick = () => {
-
-      document
-        .querySelectorAll(".group")
-        .forEach(b =>
-          b.classList.remove(
-            "active"
-          )
+    const maxDimension =
+        Math.max(
+            size2.x,
+            size2.y,
+            size2.z
         );
 
 
-      button.classList.add(
-        "active"
-      );
+    const distance =
+        maxDimension /
+        (2 *
+        Math.tan(
+            THREE.MathUtils.degToRad(
+                camera.fov / 2
+            )
+        ));
 
 
-      currentGroup =
-        button.dataset.group;
+    camera.position.set(
+        0,
+        maxDimension * 0.15,
+        distance * 1.25
+    );
 
 
-      buildMuscleList();
+    controls.target.set(
+        0,
+        0,
+        0
+    );
 
-    };
+    controls.update();
 
-  });
+}
 
 
-/* ==================================================
-   SEARCH
-================================================== */
+/* ============================================================
+   MUSKEL-LISTE
+============================================================ */
 
-document.getElementById(
-  "search"
-).addEventListener(
-  "input",
-  buildMuscleList
+function updateMuscleList() {
+
+    const list =
+        document.getElementById("muscleList");
+
+    list.innerHTML = "";
+
+
+    let filtered =
+        meshes.filter(mesh => {
+
+            if (
+                currentRegion !== "Alle" &&
+                mesh.userData.region !== currentRegion
+            ) {
+
+                return false;
+
+            }
+
+            const search =
+                document.getElementById("search")
+                    .value
+                    .toLowerCase()
+                    .trim();
+
+            if (!search) {
+                return true;
+            }
+
+            const name =
+                getGermanName(mesh.name)
+                    .toLowerCase();
+
+            const original =
+                mesh.name.toLowerCase();
+
+            return (
+                name.includes(search) ||
+                original.includes(search)
+            );
+
+        });
+
+
+    /*
+     * Einige GLB-Dateien besitzen viele
+     * technische Hilfs-Meshes. Diese werden
+     * möglichst weit nach hinten verschoben.
+     */
+
+    filtered.sort((a, b) => {
+
+        const ar =
+            a.userData.region === "Sonstiges";
+
+        const br =
+            b.userData.region === "Sonstiges";
+
+        if (ar !== br) {
+            return ar ? 1 : -1;
+        }
+
+        return getGermanName(a.name)
+            .localeCompare(
+                getGermanName(b.name),
+                "de"
+            );
+
+    });
+
+
+    filtered.forEach(mesh => {
+
+        const item =
+            document.createElement("button");
+
+        item.className =
+            "muscle-item";
+
+
+        if (mesh === selectedMesh) {
+            item.classList.add("selected");
+        }
+
+
+        const name =
+            document.createElement("div");
+
+        name.className =
+            "muscle-item-name";
+
+        name.textContent =
+            getGermanName(mesh.name);
+
+
+        const type =
+            document.createElement("div");
+
+        type.className =
+            "muscle-item-type";
+
+        type.textContent =
+            mesh.userData.region;
+
+
+        item.appendChild(name);
+
+        item.appendChild(type);
+
+
+        item.addEventListener(
+            "click",
+            () => {
+
+                selectMesh(mesh);
+
+                focusMesh(mesh);
+
+            }
+        );
+
+
+        list.appendChild(item);
+
+    });
+
+
+    document.getElementById("panelSubtitle")
+        .textContent =
+        filtered.length +
+        " Strukturen";
+}
+
+
+function updateMuscleListSelection(mesh) {
+
+    document
+        .querySelectorAll(".muscle-item")
+        .forEach(item => {
+
+            item.classList.remove("selected");
+
+        });
+
+
+    /*
+     * Liste neu zeichnen, damit die Auswahl
+     * korrekt markiert wird.
+     */
+
+    updateMuscleList();
+
+}
+
+
+/* ============================================================
+   REGION-ZÄHLER
+============================================================ */
+
+function updateCounts() {
+
+    const regions = [
+        "Alle",
+        "Brust",
+        "Rücken",
+        "Schultern",
+        "Arme",
+        "Bauch",
+        "Beine",
+        "Gesäß"
+    ];
+
+
+    regions.forEach(region => {
+
+        const count =
+            region === "Alle"
+                ? meshes.length
+                : meshes.filter(
+                    mesh =>
+                    mesh.userData.region === region
+                ).length;
+
+
+        const element =
+            document.getElementById(
+                "count-" + region
+            );
+
+
+        if (element) {
+            element.textContent = count;
+        }
+
+    });
+
+}
+
+
+/* ============================================================
+   MUSKEL FOKUSSIEREN
+============================================================ */
+
+function focusMesh(mesh) {
+
+    const box =
+        new THREE.Box3()
+            .setFromObject(mesh);
+
+    const center =
+        box.getCenter(
+            new THREE.Vector3()
+        );
+
+    const size =
+        box.getSize(
+            new THREE.Vector3()
+        );
+
+
+    controls.target.copy(center);
+
+
+    const max =
+        Math.max(
+            size.x,
+            size.y,
+            size.z
+        );
+
+
+    /*
+     * Nicht zu nah an sehr kleine Strukturen.
+     */
+
+    const distance =
+        Math.max(
+            max * 4,
+            0.7
+        );
+
+
+    const direction =
+        new THREE.Vector3()
+            .subVectors(
+                camera.position,
+                controls.target
+            )
+            .normalize();
+
+
+    camera.position.copy(
+        center.clone()
+            .add(
+                direction.multiplyScalar(
+                    distance
+                )
+            )
+    );
+
+
+    controls.update();
+
+}
+
+
+/* ============================================================
+   ISOLIEREN
+============================================================ */
+
+document
+    .getElementById("isolate")
+    .addEventListener(
+        "click",
+        () => {
+
+            if (!selectedMesh) {
+                return;
+            }
+
+            isolated = true;
+
+
+            meshes.forEach(mesh => {
+
+                if (mesh === selectedMesh) {
+
+                    mesh.visible = true;
+
+                } else {
+
+                    mesh.visible = false;
+
+                }
+
+            });
+
+        }
+    );
+
+
+/* ============================================================
+   AUSBLENDEN
+============================================================ */
+
+document
+    .getElementById("hide")
+    .addEventListener(
+        "click",
+        () => {
+
+            if (!selectedMesh) {
+                return;
+            }
+
+            selectedMesh.visible = false;
+
+            restoreSelected();
+
+            document.getElementById("info")
+                .style.display = "none";
+
+        }
+    );
+
+
+/* ============================================================
+   ALLE ANZEIGEN
+============================================================ */
+
+function showEverything() {
+
+    isolated = false;
+
+    meshes.forEach(mesh => {
+
+        mesh.visible = true;
+
+    });
+
+}
+
+
+document
+    .getElementById("showAll")
+    .addEventListener(
+        "click",
+        showEverything
+    );
+
+
+/* ============================================================
+   REGIONEN
+============================================================ */
+
+document
+    .querySelectorAll(".category")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                document
+                    .querySelectorAll(".category")
+                    .forEach(b =>
+                        b.classList.remove("active")
+                    );
+
+
+                button.classList.add("active");
+
+
+                currentRegion =
+                    button.dataset.region;
+
+
+                document
+                    .getElementById("currentRegion")
+                    .textContent =
+                    currentRegion === "Alle"
+                        ? "Ganzkörper"
+                        : currentRegion;
+
+
+                updateMuscleList();
+
+            }
+        );
+
+    });
+
+
+/* ============================================================
+   SUCHE
+============================================================ */
+
+document
+    .getElementById("search")
+    .addEventListener(
+        "input",
+        updateMuscleList
+    );
+
+
+/* ============================================================
+   3D CLICK
+============================================================ */
+
+const raycaster =
+    new THREE.Raycaster();
+
+const mouse =
+    new THREE.Vector2();
+
+
+renderer.domElement.addEventListener(
+    "pointerdown",
+    event => {
+
+        const rect =
+            renderer.domElement
+                .getBoundingClientRect();
+
+
+        mouse.x =
+            (
+                event.clientX -
+                rect.left
+            ) /
+            rect.width *
+            2 -
+            1;
+
+
+        mouse.y =
+            -(
+                event.clientY -
+                rect.top
+            ) /
+            rect.height *
+            2 +
+            1;
+
+
+        raycaster.setFromCamera(
+            mouse,
+            camera
+        );
+
+
+        const hits =
+            raycaster.intersectObjects(
+                meshes,
+                true
+            );
+
+
+        if (hits.length === 0) {
+            return;
+        }
+
+
+        let hit =
+            hits[0].object;
+
+
+        /*
+         * Falls das getroffene Objekt ein
+         * Unterobjekt ist, suchen wir das
+         * eigentliche Mesh.
+         */
+
+        if (!hit.isMesh) {
+            return;
+        }
+
+
+        selectMesh(hit);
+
+    }
 );
 
 
-/* ==================================================
-   MOBILE MENU
-================================================== */
+/* ============================================================
+   KAMERA-ANSICHTEN
+============================================================ */
 
-document.getElementById(
-  "mobileMenu"
-).onclick = () => {
+function setView(type) {
 
-  document.getElementById(
-    "sidebar"
-  ).classList.toggle(
-    "open"
-  );
-
-};
+    if (!modelSize.x &&
+        !modelSize.y &&
+        !modelSize.z) {
+        return;
+    }
 
 
-/* ==================================================
+    const max =
+        Math.max(
+            modelSize.x,
+            modelSize.y,
+            modelSize.z
+        );
+
+
+    const distance =
+        max * 1.7;
+
+
+    if (type === "front") {
+
+        camera.position.set(
+            0,
+            0,
+            distance
+        );
+
+    }
+
+
+    if (type === "back") {
+
+        camera.position.set(
+            0,
+            0,
+            -distance
+        );
+
+    }
+
+
+    if (type === "side") {
+
+        camera.position.set(
+            distance,
+            0,
+            0
+        );
+
+    }
+
+
+    controls.target.set(
+        0,
+        0,
+        0
+    );
+
+    controls.update();
+
+}
+
+
+document
+    .getElementById("front")
+    .addEventListener(
+        "click",
+        () => setView("front")
+    );
+
+
+document
+    .getElementById("back")
+    .addEventListener(
+        "click",
+        () => setView("back")
+    );
+
+
+document
+    .getElementById("side")
+    .addEventListener(
+        "click",
+        () => setView("side")
+    );
+
+
+/* ============================================================
+   RESET
+============================================================ */
+
+document
+    .getElementById("reset")
+    .addEventListener(
+        "click",
+        () => {
+
+            showEverything();
+
+            restoreSelected();
+
+            document.getElementById("info")
+                .style.display = "none";
+
+            fitModel();
+
+        }
+    );
+
+
+/* ============================================================
+   ZOOM
+============================================================ */
+
+document
+    .getElementById("zoomIn")
+    .addEventListener(
+        "click",
+        () => {
+
+            const direction =
+                new THREE.Vector3()
+                    .subVectors(
+                        camera.position,
+                        controls.target
+                    )
+                    .multiplyScalar(0.8);
+
+
+            camera.position.copy(
+                controls.target
+                    .clone()
+                    .add(direction)
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("zoomOut")
+    .addEventListener(
+        "click",
+        () => {
+
+            const direction =
+                new THREE.Vector3()
+                    .subVectors(
+                        camera.position,
+                        controls.target
+                    )
+                    .multiplyScalar(1.25);
+
+
+            camera.position.copy(
+                controls.target
+                    .clone()
+                    .add(direction)
+            );
+
+        }
+    );
+
+
+/* ============================================================
+   BESCHRIFTUNGEN
+============================================================ */
+
+document
+    .getElementById("labels")
+    .addEventListener(
+        "click",
+        () => {
+
+            labelsVisible =
+                !labelsVisible;
+
+
+            document
+                .getElementById("labels")
+                .classList.toggle(
+                    "active",
+                    labelsVisible
+                );
+
+        }
+    );
+
+
+/* ============================================================
+   MOBILE MENÜS
+============================================================ */
+
+document
+    .getElementById("mobileMenu")
+    .addEventListener(
+        "click",
+        () => {
+
+            document
+                .getElementById("sidebar")
+                .classList.toggle("open");
+
+        }
+    );
+
+
+document
+    .getElementById("rightMenu")
+    .addEventListener(
+        "click",
+        () => {
+
+            document
+                .getElementById("rightPanel")
+                .classList.toggle("open");
+
+        }
+    );
+
+
+/* ============================================================
+   RESIZE
+============================================================ */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        camera.aspect =
+            viewer.clientWidth /
+            viewer.clientHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            viewer.clientWidth,
+            viewer.clientHeight
+        );
+
+    }
+);
+
+
+/* ============================================================
    ANIMATION
-================================================== */
+============================================================ */
 
 function animate() {
 
-  requestAnimationFrame(
-    animate
-  );
+    requestAnimationFrame(animate);
 
-  controls.update();
+    controls.update();
 
-  renderer.render(
-    scene,
-    camera
-  );
+    renderer.render(
+        scene,
+        camera
+    );
 
 }
 
 animate();
-
-
-/* ==================================================
-   START
-================================================== */
-
-loadBody();
 
 </script>
 
