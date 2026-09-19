@@ -2,439 +2,366 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MuscleWeb – 3D Anatomie</title>
+<title>MuscleWeb</title>
 
 <style>
-*{box-sizing:border-box}
-
-html,body{
-    margin:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#07090c;
-    color:#f4f5f7;
-    font-family:Arial,Helvetica,sans-serif;
+* {
+    box-sizing: border-box;
 }
 
-button,input{font:inherit}
-button{cursor:pointer}
-
-#app{
-    width:100%;
-    height:100%;
-    display:flex;
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #080a0d;
+    color: white;
+    font-family: Arial, sans-serif;
 }
 
-#sidebar{
-    width:270px;
-    min-width:270px;
-    height:100%;
-    background:#0d1014;
-    border-right:1px solid #252a31;
-    display:flex;
-    flex-direction:column;
-    z-index:30;
+#app {
+    width: 100%;
+    height: 100%;
+    display: flex;
 }
 
-.logo{
-    padding:25px 22px 21px;
-    border-bottom:1px solid #242930;
+/* SIDEBAR */
+
+#sidebar {
+    width: 250px;
+    min-width: 250px;
+    height: 100%;
+    background: #101318;
+    border-right: 1px solid #292e36;
+    padding: 22px 14px;
+    overflow-y: auto;
+    z-index: 20;
 }
 
-.logo-title{
-    font-size:25px;
-    font-weight:800;
+.logo {
+    padding: 5px 10px 22px;
+    border-bottom: 1px solid #292e36;
+    margin-bottom: 18px;
 }
 
-.logo-subtitle{
-    color:#747d89;
-    font-size:12px;
-    margin-top:5px;
+.logo h1 {
+    margin: 0;
+    font-size: 25px;
 }
 
-.section-title{
-    padding:20px 18px 9px;
-    color:#69727e;
-    font-size:10px;
-    font-weight:800;
-    letter-spacing:1.2px;
-    text-transform:uppercase;
+.logo p {
+    margin: 5px 0 0;
+    color: #737b86;
+    font-size: 11px;
 }
 
-.region-list{
-    padding:0 10px;
+.category-title {
+    color: #68717c;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin: 15px 10px 8px;
+    text-transform: uppercase;
 }
 
-.region-btn{
-    width:100%;
-    border:0;
-    background:transparent;
-    color:#aeb5bf;
-    text-align:left;
-    padding:12px 13px;
-    border-radius:8px;
-    margin-bottom:2px;
+.region {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: #aeb5bd;
+    text-align: left;
+    padding: 11px 12px;
+    border-radius: 7px;
+    margin-bottom: 2px;
+    cursor: pointer;
 }
 
-.region-btn:hover{
-    background:#181d23;
-    color:white;
+.region:hover {
+    background: #1c2128;
+    color: white;
 }
 
-.region-btn.active{
-    background:#252b34;
-    color:white;
+.region.active {
+    background: #292f38;
+    color: white;
 }
 
-.sidebar-bottom{
-    margin-top:auto;
-    padding:16px;
-    border-top:1px solid #242930;
+/* MAIN */
+
+#main {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    position: relative;
 }
 
-.small-info{
-    color:#626b76;
-    font-size:10px;
-    line-height:1.55;
+#viewer {
+    position: absolute;
+    inset: 0;
 }
 
-#main{
-    flex:1;
-    min-width:0;
-    height:100%;
-    position:relative;
+/* TOP */
+
+#topbar {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    right: 16px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
 }
 
-#viewer{
-    position:absolute;
-    inset:0;
+#search {
+    width: 330px;
+    max-width: 45%;
+    height: 42px;
+    background: rgba(14,17,22,.95);
+    border: 1px solid #303640;
+    border-radius: 8px;
+    padding: 0 13px;
+    color: white;
+    outline: none;
 }
 
-canvas{
-    display:block;
+#search::placeholder {
+    color: #6f7781;
 }
 
-#topbar{
-    position:absolute;
-    top:0;
-    left:0;
-    right:0;
-    height:75px;
-    padding:15px 18px;
-    display:flex;
-    align-items:center;
-    gap:9px;
-    z-index:10;
-    pointer-events:none;
+.spacer {
+    flex: 1;
 }
 
-#search{
-    width:min(380px,43vw);
-    height:43px;
-    padding:0 14px;
-    border:1px solid #2a3038;
-    border-radius:9px;
-    background:rgba(14,17,22,.94);
-    color:white;
-    outline:none;
-    pointer-events:auto;
+.top-button {
+    height: 42px;
+    padding: 0 14px;
+    border-radius: 8px;
+    border: 1px solid #303640;
+    background: rgba(14,17,22,.95);
+    color: #d6dbe0;
+    cursor: pointer;
 }
 
-#search::placeholder{
-    color:#69727d;
+.top-button.active {
+    background: #e0e3e6;
+    color: #111318;
 }
 
-.top-space{
-    flex:1;
+/* MUSCLE LIST */
+
+#muscle-panel {
+    position: absolute;
+    left: 16px;
+    top: 70px;
+    width: 275px;
+    max-height: 55%;
+    background: rgba(14,17,22,.96);
+    border: 1px solid #2d333b;
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 8;
 }
 
-.top-btn{
-    height:43px;
-    padding:0 14px;
-    border:1px solid #2a3038;
-    border-radius:9px;
-    background:rgba(14,17,22,.94);
-    color:#d9dde2;
-    pointer-events:auto;
+.panel-header {
+    padding: 14px;
+    border-bottom: 1px solid #2b3037;
 }
 
-.top-btn.active{
-    background:#d9dde2;
-    color:#101318;
+.panel-title {
+    font-size: 16px;
+    font-weight: bold;
 }
 
-#muscle-panel{
-    position:absolute;
-    top:88px;
-    left:18px;
-    width:300px;
-    max-height:calc(100% - 110px);
-    background:rgba(13,16,21,.96);
-    border:1px solid #292f37;
-    border-radius:12px;
-    overflow:hidden;
-    z-index:8;
+.panel-count {
+    margin-top: 5px;
+    color: #68717c;
+    font-size: 10px;
 }
 
-.panel-header{
-    padding:15px;
-    border-bottom:1px solid #292f37;
+#muscle-list {
+    max-height: 350px;
+    overflow-y: auto;
 }
 
-.panel-title{
-    font-size:16px;
-    font-weight:750;
+.muscle {
+    padding: 10px 14px;
+    border-bottom: 1px solid #20252b;
+    color: #aeb5bd;
+    font-size: 12px;
+    cursor: pointer;
 }
 
-.panel-subtitle{
-    margin-top:4px;
-    color:#69727d;
-    font-size:11px;
+.muscle:hover,
+.muscle.selected {
+    background: #292f38;
+    color: white;
 }
 
-#muscle-count{
-    margin-top:8px;
-    color:#59626d;
-    font-size:10px;
+/* VIEW BUTTONS */
+
+#view-buttons {
+    position: absolute;
+    right: 16px;
+    top: 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    z-index: 8;
 }
 
-#muscle-list{
-    overflow-y:auto;
-    max-height:450px;
+.view-button {
+    width: 48px;
+    height: 39px;
+    border-radius: 7px;
+    border: 1px solid #303640;
+    background: rgba(14,17,22,.95);
+    color: #d3d8dd;
+    cursor: pointer;
 }
 
-.muscle-item{
-    padding:11px 15px;
-    border-bottom:1px solid #1d2228;
-    color:#aeb5bd;
-    font-size:12px;
+/* DETAIL */
+
+#detail {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    width: 300px;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid #2d333b;
+    background: rgba(14,17,22,.97);
+    display: none;
+    z-index: 12;
 }
 
-.muscle-item:hover,
-.muscle-item.active{
-    background:#292f38;
-    color:white;
+#detail-name {
+    font-size: 18px;
+    font-weight: bold;
 }
 
-#detail-panel{
-    position:absolute;
-    right:18px;
-    bottom:18px;
-    width:315px;
-    background:rgba(13,16,21,.97);
-    border:1px solid #2a3038;
-    border-radius:12px;
-    padding:17px;
-    z-index:12;
-    display:none;
+#detail-region {
+    color: #6d7681;
+    font-size: 11px;
+    margin-top: 4px;
 }
 
-.detail-name{
-    font-size:19px;
-    font-weight:750;
+.detail-text {
+    color: #929aa4;
+    font-size: 11px;
+    line-height: 1.5;
+    margin-top: 12px;
 }
 
-.detail-region{
-    color:#707985;
-    font-size:11px;
-    margin-top:5px;
+.detail-buttons {
+    display: flex;
+    gap: 7px;
+    margin-top: 12px;
 }
 
-.detail-description{
-    color:#929aa5;
-    font-size:11px;
-    line-height:1.5;
-    margin-top:12px;
+.detail-button {
+    flex: 1;
+    padding: 9px 5px;
+    border-radius: 7px;
+    border: 1px solid #343b44;
+    background: #1b2027;
+    color: #d9dde1;
+    cursor: pointer;
 }
 
-.detail-actions{
-    display:flex;
-    gap:7px;
-    margin-top:14px;
+.detail-button.main {
+    background: #dfe2e5;
+    color: #111318;
 }
 
-.detail-btn{
-    flex:1;
-    padding:10px 7px;
-    border:1px solid #353c46;
-    border-radius:8px;
-    background:#1b2027;
-    color:#e2e5e8;
-    font-size:11px;
+/* LOADING */
+
+#loading {
+    position: absolute;
+    inset: 0;
+    background: #080a0d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
 }
 
-.detail-btn.primary{
-    background:#d9dde2;
-    color:#101318;
+.loading-box {
+    width: 400px;
+    max-width: 85%;
+    text-align: center;
 }
 
-.exercise-title{
-    margin-top:17px;
-    color:#69727d;
-    font-size:10px;
-    font-weight:800;
-    text-transform:uppercase;
-    letter-spacing:1px;
+.loading-title {
+    font-size: 22px;
+    font-weight: bold;
 }
 
-.exercise{
-    margin-top:7px;
-    padding:9px 10px;
-    background:#191e24;
-    border-radius:7px;
-    color:#bfc5cc;
-    font-size:11px;
+#loading-text {
+    margin-top: 8px;
+    color: #707985;
+    font-size: 12px;
 }
 
-#view-controls{
-    position:absolute;
-    right:18px;
-    top:90px;
-    display:flex;
-    flex-direction:column;
-    gap:7px;
-    z-index:8;
+.progress {
+    height: 5px;
+    background: #1d2228;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 20px;
 }
 
-.view-btn{
-    width:46px;
-    height:40px;
-    border:1px solid #2a3038;
-    border-radius:8px;
-    background:rgba(13,16,21,.94);
-    color:#cdd2d8;
-    font-size:11px;
+#progress-bar {
+    width: 0%;
+    height: 100%;
+    background: #dfe2e5;
 }
 
-.muscle-label{
-    position:absolute;
-    transform:translate(-50%,-50%);
-    padding:5px 8px;
-    background:rgba(10,12,15,.9);
-    border:1px solid #3a414a;
-    border-radius:6px;
-    color:#e3e6ea;
-    font-size:10px;
-    white-space:nowrap;
-    pointer-events:none;
-    z-index:4;
-    opacity:0;
+/* MOBILE */
+
+#mobile-menu {
+    display: none;
 }
 
-.muscle-label.visible{
-    opacity:1;
-}
+@media (max-width: 800px) {
 
-.muscle-label.selected{
-    background:#e2a0a5;
-    color:#101214;
-}
-
-#loading{
-    position:absolute;
-    inset:0;
-    background:#07090c;
-    z-index:100;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    transition:opacity .45s;
-}
-
-.loading-box{
-    width:min(430px,84vw);
-    text-align:center;
-}
-
-.loading-title{
-    font-size:22px;
-    font-weight:750;
-}
-
-.loading-text{
-    margin-top:8px;
-    color:#737c87;
-    font-size:12px;
-}
-
-.progress-container{
-    margin-top:22px;
-    height:5px;
-    background:#1b2026;
-    border-radius:5px;
-    overflow:hidden;
-}
-
-#progress{
-    width:0%;
-    height:100%;
-    background:#d8dce1;
-}
-
-#error-box{
-    display:none;
-    margin-top:18px;
-    padding:12px;
-    background:#21171a;
-    border:1px solid #4b3338;
-    border-radius:8px;
-    color:#d7adb4;
-    font-size:11px;
-}
-
-#mobile-menu{
-    display:none;
-}
-
-@media(max-width:850px){
-
-    #sidebar{
-        position:absolute;
-        left:-280px;
-        top:0;
-        transition:left .25s;
-        box-shadow:15px 0 40px rgba(0,0,0,.45);
+    #sidebar {
+        position: absolute;
+        left: -260px;
+        transition: left .2s;
+        box-shadow: 10px 0 30px rgba(0,0,0,.5);
     }
 
-    #sidebar.open{
-        left:0;
+    #sidebar.open {
+        left: 0;
     }
 
-    #mobile-menu{
-        display:block;
-        position:absolute;
-        left:14px;
-        top:14px;
-        width:43px;
-        height:43px;
-        z-index:40;
-        border:1px solid #2a3038;
-        border-radius:9px;
-        background:rgba(13,16,21,.95);
-        color:white;
+    #mobile-menu {
+        display: block;
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        width: 42px;
+        height: 42px;
+        z-index: 30;
+        border: 1px solid #303640;
+        border-radius: 8px;
+        background: #101318;
+        color: white;
     }
 
-    #topbar{
-        left:68px;
+    #topbar {
+        left: 67px;
     }
 
-    #search{
-        width:40vw;
+    #search {
+        max-width: 40%;
     }
 
-    #muscle-panel{
-        left:12px;
-        top:auto;
-        bottom:12px;
-        width:260px;
-        max-height:280px;
-    }
-
-    #muscle-list{
-        max-height:190px;
+    #muscle-panel {
+        width: 240px;
+        max-height: 40%;
     }
 }
 </style>
@@ -444,147 +371,186 @@ canvas{
 
 <div id="app">
 
-<aside id="sidebar">
+    <aside id="sidebar">
 
-    <div class="logo">
-        <div class="logo-title">MuscleWeb</div>
-        <div class="logo-subtitle">3D Human Anatomy Explorer</div>
-    </div>
-
-    <div class="section-title">Körperregion</div>
-
-    <div class="region-list">
-
-        <button class="region-btn active" data-region="all">Ganzkörper</button>
-        <button class="region-btn" data-region="chest">Brust</button>
-        <button class="region-btn" data-region="back">Rücken</button>
-        <button class="region-btn" data-region="shoulders">Schultern</button>
-        <button class="region-btn" data-region="arms">Arme</button>
-        <button class="region-btn" data-region="abs">Bauch</button>
-        <button class="region-btn" data-region="legs">Beine</button>
-        <button class="region-btn" data-region="glutes">Gesäß</button>
-
-    </div>
-
-    <div class="sidebar-bottom">
-        <div class="small-info">
-            Interaktive 3D-Muskelanatomie<br>
-            BodyExplorer / BodyParts3D
+        <div class="logo">
+            <h1>MuscleWeb</h1>
+            <p>3D Human Anatomy Explorer</p>
         </div>
-    </div>
 
-</aside>
+        <div class="category-title">
+            Körperregion
+        </div>
 
-
-<main id="main">
-
-<button id="mobile-menu">☰</button>
-
-<div id="viewer"></div>
-
-<div id="topbar">
-
-    <input
-        id="search"
-        type="text"
-        placeholder="Muskel suchen..."
-    >
-
-    <div class="top-space"></div>
-
-    <button class="top-btn" id="labelsBtn">
-        Labels
-    </button>
-
-    <button class="top-btn" id="skeletonBtn">
-        Skelett
-    </button>
-
-</div>
-
-
-<div id="view-controls">
-
-    <button class="view-btn" id="frontBtn">Front</button>
-    <button class="view-btn" id="backBtn">Rücken</button>
-    <button class="view-btn" id="sideBtn">Seite</button>
-    <button class="view-btn" id="resetBtn">Reset</button>
-    <button class="view-btn" id="zoomInBtn">+</button>
-    <button class="view-btn" id="zoomOutBtn">−</button>
-
-</div>
-
-
-<div id="muscle-panel">
-
-    <div class="panel-header">
-
-        <div class="panel-title" id="panel-title">
+        <button class="region active" data-region="all">
             Ganzkörper
+        </button>
+
+        <button class="region" data-region="chest">
+            Brust
+        </button>
+
+        <button class="region" data-region="back">
+            Rücken
+        </button>
+
+        <button class="region" data-region="shoulders">
+            Schultern
+        </button>
+
+        <button class="region" data-region="arms">
+            Arme
+        </button>
+
+        <button class="region" data-region="abs">
+            Bauch
+        </button>
+
+        <button class="region" data-region="legs">
+            Beine
+        </button>
+
+        <button class="region" data-region="glutes">
+            Gesäß
+        </button>
+
+    </aside>
+
+
+    <main id="main">
+
+        <button id="mobile-menu">☰</button>
+
+        <div id="viewer"></div>
+
+
+        <div id="topbar">
+
+            <input
+                id="search"
+                placeholder="Muskel suchen..."
+            >
+
+            <div class="spacer"></div>
+
+            <button
+                class="top-button"
+                id="skeleton-button"
+            >
+                Skelett
+            </button>
+
         </div>
 
-        <div class="panel-subtitle">
-            Muskel auswählen
+
+        <div id="view-buttons">
+
+            <button class="view-button" id="front">
+                Front
+            </button>
+
+            <button class="view-button" id="back">
+                Rücken
+            </button>
+
+            <button class="view-button" id="side">
+                Seite
+            </button>
+
+            <button class="view-button" id="reset">
+                Reset
+            </button>
+
+            <button class="view-button" id="zoom-in">
+                +
+            </button>
+
+            <button class="view-button" id="zoom-out">
+                −
+            </button>
+
         </div>
 
-        <div id="muscle-count">
-            0 Muskeln
+
+        <div id="muscle-panel">
+
+            <div class="panel-header">
+
+                <div
+                    class="panel-title"
+                    id="panel-title"
+                >
+                    Ganzkörper
+                </div>
+
+                <div
+                    class="panel-count"
+                    id="panel-count"
+                >
+                    Lade Muskeln...
+                </div>
+
+            </div>
+
+            <div id="muscle-list"></div>
+
         </div>
 
-    </div>
 
-    <div id="muscle-list"></div>
+        <div id="detail">
 
-</div>
+            <div id="detail-name">
+                Muskel
+            </div>
 
+            <div id="detail-region">
+                Körperregion
+            </div>
 
-<div id="detail-panel">
+            <div class="detail-text">
+                Dieser Muskel wurde ausgewählt.
+            </div>
 
-    <div class="detail-name" id="detail-name">
-        Muskel
-    </div>
+            <div class="detail-buttons">
 
-    <div class="detail-region" id="detail-region">
-        Körperregion
-    </div>
+                <button
+                    class="detail-button main"
+                    id="focus"
+                >
+                    Fokussieren
+                </button>
 
-    <div class="detail-description">
-        Wähle einen Muskel aus, um ihn genauer zu untersuchen.
-    </div>
+                <button
+                    class="detail-button"
+                    id="isolate"
+                >
+                    Isolieren
+                </button>
 
-    <div class="detail-actions">
+            </div>
 
-        <button class="detail-btn primary" id="focusBtn">
-            Fokussieren
-        </button>
+            <div class="detail-buttons">
 
-        <button class="detail-btn" id="isolateBtn">
-            Isolieren
-        </button>
+                <button
+                    class="detail-button"
+                    id="transparent"
+                >
+                    Durchsichtig
+                </button>
 
-    </div>
+                <button
+                    class="detail-button"
+                    id="show-all"
+                >
+                    Alles zeigen
+                </button>
 
-    <div class="detail-actions">
+            </div>
 
-        <button class="detail-btn" id="transparentBtn">
-            Durchsichtig
-        </button>
+        </div>
 
-        <button class="detail-btn" id="showAllBtn">
-            Alles zeigen
-        </button>
+    </main>
 
-    </div>
-
-    <div class="exercise-title">
-        Übungen
-    </div>
-
-    <div id="exercise-list"></div>
-
-</div>
-
-</main>
 </div>
 
 
@@ -596,15 +562,13 @@ canvas{
             3D-Modell wird geladen
         </div>
 
-        <div class="loading-text" id="loadingText">
+        <div id="loading-text">
             Anatomie wird geladen...
         </div>
 
-        <div class="progress-container">
-            <div id="progress"></div>
+        <div class="progress">
+            <div id="progress-bar"></div>
         </div>
-
-        <div id="error-box"></div>
 
     </div>
 
@@ -613,9 +577,9 @@ canvas{
 
 <script type="importmap">
 {
-    "imports":{
-        "three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-        "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
     }
 }
 </script>
@@ -635,7 +599,7 @@ import {
 
 
 /* =====================================================
-   SCENE
+   GRUNDSETUP
 ===================================================== */
 
 const viewer =
@@ -645,7 +609,7 @@ const scene =
     new THREE.Scene();
 
 scene.background =
-    new THREE.Color(0x07090c);
+    new THREE.Color(0x080a0d);
 
 
 const camera =
@@ -666,7 +630,7 @@ camera.position.set(
 
 const renderer =
     new THREE.WebGLRenderer({
-        antialias:true
+        antialias: true
     });
 
 renderer.setPixelRatio(
@@ -693,42 +657,48 @@ viewer.appendChild(
    LICHT
 ===================================================== */
 
-scene.add(
+const ambient =
     new THREE.HemisphereLight(
         0xffffff,
-        0x30333a,
+        0x333333,
         2.5
-    )
-);
+    );
 
-const light1 =
+scene.add(ambient);
+
+
+const directional =
     new THREE.DirectionalLight(
         0xffffff,
         3
     );
 
-light1.position.set(
-    5,8,6
+directional.position.set(
+    5,
+    8,
+    6
 );
 
-scene.add(light1);
+scene.add(directional);
 
 
-const light2 =
+const directional2 =
     new THREE.DirectionalLight(
         0xffffff,
         1.5
     );
 
-light2.position.set(
-    -5,3,4
+directional2.position.set(
+    -5,
+    3,
+    4
 );
 
-scene.add(light2);
+scene.add(directional2);
 
 
 /* =====================================================
-   CONTROLS
+   KAMERA
 ===================================================== */
 
 const controls =
@@ -738,15 +708,12 @@ const controls =
     );
 
 controls.enableDamping = true;
-controls.dampingFactor = .07;
+controls.dampingFactor = 0.07;
 
-controls.enablePan = true;
-controls.screenSpacePanning = true;
-
-controls.minDistance = .1;
+controls.minDistance = 0.2;
 controls.maxDistance = 100;
 
-controls.rotateSpeed = .7;
+controls.rotateSpeed = 0.7;
 controls.zoomSpeed = 1.2;
 
 
@@ -754,257 +721,139 @@ controls.zoomSpeed = 1.2;
    MODELLE
 ===================================================== */
 
-let anatomyModel = null;
-let skeletonModel = null;
+let anatomy = null;
+let skeleton = null;
 
-let modelMeshes = [];
+let anatomyMeshes = [];
 
-let selectedMesh = null;
+let selected = null;
 
-let skeletonVisible = false;
-let labelsVisible = false;
+let skeletonOn = false;
 
 let currentRegion = "all";
 
 
 /* =====================================================
-   NAMEN
+   DEUTSCHE NAMEN
 ===================================================== */
 
-const names = {
+const muscleNames = {
 
-    pectoralismajor:"Großer Brustmuskel",
-    pectoralisminor:"Kleiner Brustmuskel",
+    pectoralismajor: "Großer Brustmuskel",
+    pectoralisminor: "Kleiner Brustmuskel",
 
-    deltoid:"Deltamuskel",
-    deltoideus:"Deltamuskel",
+    deltoid: "Deltamuskel",
+    deltoideus: "Deltamuskel",
 
-    trapezius:"Trapezmuskel",
+    trapezius: "Trapezmuskel",
 
-    latissimusdorsi:"Breiter Rückenmuskel",
-    latissimus:"Breiter Rückenmuskel",
+    latissimusdorsi: "Breiter Rückenmuskel",
+    latissimus: "Breiter Rückenmuskel",
 
-    rhomboid:"Rautenmuskel",
+    rhomboid: "Rautenmuskel",
 
-    erectorspinae:"Rückenstrecker",
+    erectorspinae: "Rückenstrecker",
 
-    bicepsbrachii:"Bizeps",
-    biceps:"Bizeps",
+    bicepsbrachii: "Bizeps",
+    biceps: "Bizeps",
 
-    tricepsbrachii:"Trizeps",
-    triceps:"Trizeps",
+    tricepsbrachii: "Trizeps",
+    triceps: "Trizeps",
 
-    brachialis:"Armbeuger",
-    brachioradialis:"Oberarm-Speichenmuskel",
+    brachialis: "Armbeuger",
+    brachioradialis: "Oberarm-Speichenmuskel",
 
-    rectusabdominis:"Gerader Bauchmuskel",
+    rectusabdominis: "Gerader Bauchmuskel",
 
-    obliquusexternus:"Äußerer schräger Bauchmuskel",
-    obliquusexternal:"Äußerer schräger Bauchmuskel",
+    obliquusexternus: "Äußerer schräger Bauchmuskel",
+    obliquusexternal: "Äußerer schräger Bauchmuskel",
 
-    obliquusinternus:"Innerer schräger Bauchmuskel",
-    obliquusinternal:"Innerer schräger Bauchmuskel",
+    obliquusinternus: "Innerer schräger Bauchmuskel",
+    obliquusinternal: "Innerer schräger Bauchmuskel",
 
-    transversusabdominis:"Querer Bauchmuskel",
+    transversusabdominis: "Querer Bauchmuskel",
 
-    serratusanterior:"Sägezahnmuskel",
+    serratusanterior: "Sägezahnmuskel",
 
-    gluteusmaximus:"Großer Gesäßmuskel",
-    gluteusmedius:"Mittlerer Gesäßmuskel",
-    gluteusminimus:"Kleiner Gesäßmuskel",
+    gluteusmaximus: "Großer Gesäßmuskel",
+    gluteusmedius: "Mittlerer Gesäßmuskel",
+    gluteusminimus: "Kleiner Gesäßmuskel",
 
-    rectusfemoris:"Gerader Oberschenkelmuskel",
-    vastuslateralis:"Äußerer Oberschenkelmuskel",
-    vastusmedialis:"Innerer Oberschenkelmuskel",
-    vastusintermedius:"Mittlerer Oberschenkelmuskel",
+    rectusfemoris: "Gerader Oberschenkelmuskel",
+    vastuslateralis: "Äußerer Oberschenkelmuskel",
+    vastusmedialis: "Innerer Oberschenkelmuskel",
+    vastusintermedius: "Mittlerer Oberschenkelmuskel",
 
-    quadriceps:"Quadrizeps",
+    quadriceps: "Quadrizeps",
 
-    bicepsfemoris:"Bizeps femoris",
+    bicepsfemoris: "Bizeps femoris",
 
-    semitendinosus:"Halbsehnenmuskel",
-    semimembranosus:"Plattsehnenmuskel",
+    semitendinosus: "Halbsehnenmuskel",
+    semimembranosus: "Plattsehnenmuskel",
 
-    sartorius:"Schneidermuskel",
+    sartorius: "Schneidermuskel",
 
-    gastrocnemius:"Zwillingswadenmuskel",
-    soleus:"Schollenmuskel",
+    gastrocnemius: "Zwillingswadenmuskel",
+    soleus: "Schollenmuskel",
 
-    tibialisanterior:"Vorderer Schienbeinmuskel",
-    tibialisposterior:"Hinterer Schienbeinmuskel",
+    tibialisanterior: "Vorderer Schienbeinmuskel",
+    tibialisposterior: "Hinterer Schienbeinmuskel",
 
-    peroneuslongus:"Langer Wadenbeinmuskel",
-    peroneusbrevis:"Kurzer Wadenbeinmuskel",
+    adductormagnus: "Großer Adduktor",
+    adductorlongus: "Langer Adduktor",
+    adductorbrevis: "Kurzer Adduktor",
 
-    adductormagnus:"Großer Adduktor",
-    adductorlongus:"Langer Adduktor",
-    adductorbrevis:"Kurzer Adduktor",
-    adductorminimus:"Kleiner Adduktor",
+    gracilis: "Schlanker Muskel",
 
-    gracilis:"Schlanker Muskel",
+    supraspinatus: "Obergrätenmuskel",
+    infraspinatus: "Untergrätenmuskel",
 
-    pectineus:"Kammmuskel",
+    teresmajor: "Großer Rundmuskel",
+    teresminor: "Kleiner Rundmuskel",
 
-    supraspinatus:"Obergrätenmuskel",
-    infraspinatus:"Untergrätenmuskel",
+    sternocleidomastoideus: "Kopfwender",
 
-    teresmajor:"Großer Rundmuskel",
-    teresminor:"Kleiner Rundmuskel",
-
-    subscapularis:"Unterschulterblattmuskel",
-
-    sternocleidomastoideus:"Kopfwender",
-
-    masseter:"Kaumuskel",
-    temporalis:"Schläfenmuskel"
-
+    masseter: "Kaumuskel",
+    temporalis: "Schläfenmuskel"
 };
 
 
 /* =====================================================
-   WICHTIGE MUSKELN
+   NAMEN FUNKTION
 ===================================================== */
 
-const important = [
+function getMuscleName(object) {
 
-    "pectoralis",
-    "deltoid",
-    "trapezius",
-    "latissimus",
-    "rhomboid",
-    "erector",
+    const original =
+        String(object.name || "");
 
-    "biceps",
-    "triceps",
-    "brachialis",
-    "brachioradialis",
-
-    "rectusab",
-    "obliquus",
-    "transversusab",
-    "serratus",
-
-    "gluteus",
-
-    "quadriceps",
-    "rectusfemoris",
-    "vastus",
-
-    "bicepsfemoris",
-    "semitendinosus",
-    "semimembranosus",
-
-    "sartorius",
-
-    "gastrocnemius",
-    "soleus",
-
-    "tibialisanterior",
-
-    "adductor",
-    "gracilis",
-
-    "supraspinatus",
-    "infraspinatus",
-
-    "teresmajor",
-    "teresminor",
-
-    "sternocleidomastoideus"
-
-];
-
-
-/* =====================================================
-   ÜBUNGEN
-===================================================== */
-
-const exercises = {
-
-    chest:[
-        "Bankdrücken",
-        "Schrägbankdrücken",
-        "Dips",
-        "Liegestütze"
-    ],
-
-    back:[
-        "Klimmzüge",
-        "Latzug",
-        "Rudern",
-        "Kreuzheben"
-    ],
-
-    shoulders:[
-        "Schulterdrücken",
-        "Seitheben",
-        "Frontheben",
-        "Reverse Flys"
-    ],
-
-    arms:[
-        "Bizeps-Curls",
-        "Hammer Curls",
-        "Trizepsdrücken",
-        "Dips"
-    ],
-
-    abs:[
-        "Crunches",
-        "Beinheben",
-        "Plank",
-        "Cable Crunches"
-    ],
-
-    legs:[
-        "Kniebeugen",
-        "Beinpresse",
-        "Beinstrecker",
-        "Beinbeuger"
-    ],
-
-    glutes:[
-        "Hip Thrusts",
-        "Ausfallschritte",
-        "Bulgarian Split Squats",
-        "Kniebeugen"
-    ]
-
-};
-
-
-/* =====================================================
-   NAMEN ERMITTELN
-===================================================== */
-
-function cleanName(mesh){
-
-    const raw =
-        (mesh.name || "")
+    const clean =
+        original
         .toLowerCase()
-        .replace(/[^a-z0-9]/g,"");
-
+        .replace(/[^a-z0-9]/g, "");
 
     const keys =
-        Object.keys(names)
+        Object.keys(muscleNames)
         .sort(
-            (a,b)=>b.length-a.length
+            (a, b) =>
+                b.length - a.length
         );
 
+    for (const key of keys) {
 
-    for(const key of keys){
-
-        if(raw.includes(key)){
-            return names[key];
+        if (clean.includes(key)) {
+            return muscleNames[key];
         }
 
     }
 
+    /*
+       Falls ein unbekannter Name vorkommt,
+       wird er nicht mehr als englischer
+       UI-Titel erzwungen.
+    */
 
-    return (mesh.name || "Muskel")
-        .replace(/_/g," ")
-        .replace(/-/g," ");
-
+    return "Muskel";
 }
 
 
@@ -1012,113 +861,75 @@ function cleanName(mesh){
    REGION
 ===================================================== */
 
-function getRegion(mesh){
+function getRegion(object) {
 
     const text =
-        (
-            (mesh.name || "")+
-            " "+
-            (mesh.parent?.name || "")
-        ).toLowerCase();
+        String(object.name || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "");
 
-
-    if(
-        text.includes("pector") ||
-        text.includes("chest")
-    ){
+    if (
+        text.includes("pector")
+    ) {
         return "chest";
     }
 
-
-    if(
-        text.includes("trapez") ||
+    if (
+        text.includes("trapezi") ||
         text.includes("latiss") ||
         text.includes("rhombo") ||
         text.includes("erector")
-    ){
+    ) {
         return "back";
     }
 
-
-    if(
+    if (
         text.includes("delto") ||
-        text.includes("shoulder") ||
         text.includes("supraspin") ||
         text.includes("infraspin") ||
         text.includes("teres")
-    ){
+    ) {
         return "shoulders";
     }
 
-
-    if(
+    if (
         text.includes("biceps") ||
         text.includes("triceps") ||
-        text.includes("brach") ||
-        text.includes("pronator") ||
-        text.includes("supinator") ||
-        text.includes("flexor") ||
-        text.includes("extensor")
-    ){
+        text.includes("brach")
+    ) {
         return "arms";
     }
 
-
-    if(
+    if (
         text.includes("rectusab") ||
         text.includes("obliqu") ||
-        text.includes("transvers") ||
+        text.includes("transversusab") ||
         text.includes("serratus")
-    ){
+    ) {
         return "abs";
     }
 
-
-    if(
+    if (
         text.includes("glute")
-    ){
+    ) {
         return "glutes";
     }
 
-
-    if(
+    if (
         text.includes("femor") ||
-        text.includes("quadriceps") ||
         text.includes("vastus") ||
-        text.includes("hamstring") ||
+        text.includes("quadriceps") ||
+        text.includes("sartorius") ||
         text.includes("gastrocn") ||
         text.includes("soleus") ||
-        text.includes("tibial") ||
+        text.includes("tibialis") ||
         text.includes("adductor") ||
-        text.includes("sartorius") ||
-        text.includes("gracilis") ||
-        text.includes("pectineus")
-    ){
+        text.includes("gracilis")
+    ) {
         return "legs";
     }
 
-
     return "all";
-
-}
-
-
-/* =====================================================
-   WICHTIG?
-===================================================== */
-
-function isImportant(mesh){
-
-    const text =
-        (mesh.name || "")
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g,"");
-
-
-    return important.some(
-        key=>text.includes(key)
-    );
-
 }
 
 
@@ -1126,81 +937,77 @@ function isImportant(mesh){
    ANATOMIE LADEN
 ===================================================== */
 
-function loadAnatomy(){
+function loadAnatomy() {
 
     return new Promise(
-        (resolve,reject)=>{
+        (resolve, reject) => {
 
             const loader =
                 new GLTFLoader();
-
 
             loader.load(
 
                 "./anatomy.glb",
 
-                gltf=>{
+                function(gltf) {
 
-                    anatomyModel =
+                    anatomy =
                         gltf.scene;
 
-
                     /*
-                        Gleiche Rotation für beide GLBs.
+                       Das ist die gleiche Orientierung,
+                       die dein vorheriges funktionierendes
+                       Modell bereits benutzt hat.
                     */
 
-                    anatomyModel.rotation.x =
-                        -Math.PI/2;
-
+                    anatomy.rotation.x =
+                        -Math.PI / 2;
 
                     scene.add(
-                        anatomyModel
+                        anatomy
                     );
 
 
-                    anatomyModel.traverse(
-                        object=>{
+                    anatomy.traverse(
+                        function(object) {
 
-                            if(!object.isMesh){
+                            if (!object.isMesh) {
                                 return;
                             }
-
 
                             object.frustumCulled =
                                 false;
 
+                            /*
+                               Eigene Materialien,
+                               damit das Modell sicher
+                               sichtbar bleibt.
+                            */
 
                             object.material =
                                 new THREE.MeshStandardMaterial({
 
-                                    color:0xb86167,
+                                    color: 0xb85f66,
 
-                                    roughness:.72,
+                                    roughness: 0.75,
 
-                                    metalness:.02,
-
-                                    transparent:false,
-
-                                    opacity:1,
-
-                                    depthWrite:true
+                                    metalness: 0.02
 
                                 });
 
 
-                            object.userData.displayName =
-                                cleanName(object);
-
+                            object.userData.name =
+                                getMuscleName(
+                                    object
+                                );
 
                             object.userData.region =
-                                getRegion(object);
+                                getRegion(
+                                    object
+                                );
 
 
-                            object.userData.important =
-                                isImportant(object);
-
-
-                            modelMeshes.push(
+                            anatomyMeshes.push(
                                 object
                             );
 
@@ -1212,128 +1019,36 @@ function loadAnatomy(){
 
                 },
 
-                event=>{
+                function(progress) {
 
-                    if(event.lengthComputable){
+                    if (
+                        progress.lengthComputable
+                    ) {
 
-                        const percentage =
-                            event.loaded /
-                            event.total *
-                            100;
+                        const percent =
+                            (
+                                progress.loaded /
+                                progress.total
+                            ) * 100;
 
-
-                        document.getElementById(
-                            "progress"
-                        ).style.width =
-                            percentage+"%";
-
+                        document
+                            .getElementById(
+                                "progress-bar"
+                            )
+                            .style.width =
+                                percent + "%";
                     }
 
                 },
 
-                error=>{
-                    reject(error);
-                }
-
-            );
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   SKELETT LADEN
-===================================================== */
-
-function loadSkeleton(){
-
-    return new Promise(
-        resolve=>{
-
-            const loader =
-                new GLTFLoader();
-
-
-            loader.load(
-
-                "./skeleton.glb",
-
-                gltf=>{
-
-                    skeletonModel =
-                        gltf.scene;
-
-
-                    /*
-                        Exakt gleiche Rotation.
-                    */
-
-                    skeletonModel.rotation.x =
-                        -Math.PI/2;
-
-
-                    skeletonModel.traverse(
-                        object=>{
-
-                            if(!object.isMesh){
-                                return;
-                            }
-
-
-                            object.frustumCulled =
-                                false;
-
-
-                            object.material =
-                                new THREE.MeshStandardMaterial({
-
-                                    color:0xe3ded2,
-
-                                    roughness:.8,
-
-                                    metalness:0,
-
-                                    transparent:true,
-
-                                    opacity:.85,
-
-                                    depthWrite:false,
-
-                                    depthTest:true
-
-                                });
-
-
-                            object.renderOrder=0;
-
-                        }
-                    );
-
-
-                    skeletonModel.visible=false;
-
-
-                    scene.add(
-                        skeletonModel
-                    );
-
-
-                    resolve();
-
-                },
-
-                undefined,
-
-                error=>{
+                function(error) {
 
                     console.error(
-                        "Skelett konnte nicht geladen werden:",
+                        "ANATOMY ERROR:",
                         error
                     );
 
-                    resolve();
+                    reject(error);
 
                 }
 
@@ -1341,35 +1056,20 @@ function loadSkeleton(){
 
         }
     );
-
 }
 
 
 /* =====================================================
-   GEMEINSAME AUSRICHTUNG
+   ANATOMIE AUSRICHTEN
 ===================================================== */
 
-function alignModels(){
-
-    /*
-        WICHTIGER FIX:
-
-        Wir bestimmen den Mittelpunkt der Anatomie
-        NACH der Rotation.
-
-        Danach bekommt BEIDE Modelle:
-        - denselben Maßstab
-        - dieselbe Position
-        - dieselbe Rotation
-    */
-
+function fitAnatomy() {
 
     const box =
         new THREE.Box3()
         .setFromObject(
-            anatomyModel
+            anatomy
         );
-
 
     const center =
         new THREE.Vector3();
@@ -1378,14 +1078,12 @@ function alignModels(){
         center
     );
 
-
     const size =
         new THREE.Vector3();
 
     box.getSize(
         size
     );
-
 
     const height =
         Math.max(
@@ -1394,56 +1092,303 @@ function alignModels(){
             size.z
         );
 
+    if (height <= 0) {
+        return;
+    }
 
-    if(height<=0){
+    const scale =
+        6 / height;
+
+    anatomy.scale.setScalar(
+        scale
+    );
+
+    /*
+       Nach dem Skalieren erneut
+       den Mittelpunkt bestimmen.
+    */
+
+    const scaledBox =
+        new THREE.Box3()
+        .setFromObject(
+            anatomy
+        );
+
+    const scaledCenter =
+        new THREE.Vector3();
+
+    scaledBox.getCenter(
+        scaledCenter
+    );
+
+    anatomy.position.sub(
+        scaledCenter
+    );
+}
+
+
+/* =====================================================
+   SKELETT LADEN
+===================================================== */
+
+function loadSkeleton() {
+
+    return new Promise(
+        function(resolve) {
+
+            const loader =
+                new GLTFLoader();
+
+            loader.load(
+
+                "./skeleton.glb",
+
+                function(gltf) {
+
+                    skeleton =
+                        gltf.scene;
+
+                    skeleton.rotation.x =
+                        -Math.PI / 2;
+
+                    scene.add(
+                        skeleton
+                    );
+
+                    /*
+                       Das Skelett bekommt zunächst
+                       einen neutralen Knochen-Look.
+                    */
+
+                    skeleton.traverse(
+                        function(object) {
+
+                            if (
+                                object.isMesh
+                            ) {
+
+                                object.frustumCulled =
+                                    false;
+
+                                object.material =
+                                    new THREE.MeshStandardMaterial({
+
+                                        color: 0xe3ded2,
+
+                                        roughness: 0.8,
+
+                                        metalness: 0,
+
+                                        transparent: true,
+
+                                        opacity: 0.9,
+
+                                        depthWrite: false
+
+                                    });
+
+                            }
+
+                            if (
+                                object.isLine
+                            ) {
+
+                                object.material.transparent =
+                                    true;
+
+                                object.material.opacity =
+                                    0.9;
+
+                            }
+
+                        }
+                    );
+
+
+                    /*
+                       Noch nicht anzeigen.
+                    */
+
+                    skeleton.visible =
+                        false;
+
+
+                    resolve();
+
+                },
+
+                undefined,
+
+                function(error) {
+
+                    /*
+                       Das Skelett darf die
+                       Anatomie NICHT blockieren.
+                    */
+
+                    console.error(
+                        "SKELETON ERROR:",
+                        error
+                    );
+
+                    skeleton = null;
+
+                    resolve();
+
+                }
+
+            );
+
+        }
+    );
+}
+
+
+/* =====================================================
+   SKELETT AN ANATOMIE ANPASSEN
+===================================================== */
+
+function fitSkeleton() {
+
+    if (!skeleton) {
+        return;
+    }
+
+    /*
+       Zuerst Skeleton zurücksetzen.
+    */
+
+    skeleton.scale.set(
+        1,
+        1,
+        1
+    );
+
+    skeleton.position.set(
+        0,
+        0,
+        0
+    );
+
+
+    /*
+       Größe des Skeletts bestimmen.
+    */
+
+    const skeletonBox =
+        new THREE.Box3()
+        .setFromObject(
+            skeleton
+        );
+
+    const skeletonSize =
+        new THREE.Vector3();
+
+    skeletonBox.getSize(
+        skeletonSize
+    );
+
+
+    const skeletonHeight =
+        Math.max(
+            skeletonSize.x,
+            skeletonSize.y,
+            skeletonSize.z
+        );
+
+
+    if (
+        skeletonHeight <= 0
+    ) {
         return;
     }
 
 
-    const scale =
-        6/height;
+    /*
+       Anatomie-Größe bestimmen.
+    */
+
+    const anatomyBox =
+        new THREE.Box3()
+        .setFromObject(
+            anatomy
+        );
+
+    const anatomySize =
+        new THREE.Vector3();
+
+    anatomyBox.getSize(
+        anatomySize
+    );
+
+
+    const anatomyHeight =
+        Math.max(
+            anatomySize.x,
+            anatomySize.y,
+            anatomySize.z
+        );
 
 
     /*
-        Ganz wichtig:
-
-        position = -center * scale
-
-        NICHT einfach -center.
+       Das Skeleton bekommt dieselbe
+       Höhe wie die Anatomie.
     */
 
-    const finalPosition =
-        center.clone()
-        .multiplyScalar(-scale);
-
-
-    anatomyModel.scale.setScalar(
-        scale
-    );
-
-    skeletonModel.scale.setScalar(
-        scale
-    );
-
-
-    anatomyModel.position.copy(
-        finalPosition
-    );
-
-    skeletonModel.position.copy(
-        finalPosition
+    skeleton.scale.setScalar(
+        anatomyHeight /
+        skeletonHeight
     );
 
 
     /*
-        Sicherheitscheck:
-        exakt gleiche Rotation.
+       Mittelpunkt des Skeletts.
     */
 
-    skeletonModel.rotation.copy(
-        anatomyModel.rotation
+    const finalSkeletonBox =
+        new THREE.Box3()
+        .setFromObject(
+            skeleton
+        );
+
+    const skeletonCenter =
+        new THREE.Vector3();
+
+    finalSkeletonBox.getCenter(
+        skeletonCenter
     );
 
+
+    /*
+       Mittelpunkt der Anatomie.
+    */
+
+    const finalAnatomyBox =
+        new THREE.Box3()
+        .setFromObject(
+            anatomy
+        );
+
+    const anatomyCenter =
+        new THREE.Vector3();
+
+    finalAnatomyBox.getCenter(
+        anatomyCenter
+    );
+
+
+    /*
+       Das Skelett wird exakt auf
+       die Mitte der Anatomie gesetzt.
+    */
+
+    skeleton.position.add(
+        anatomyCenter
+        .clone()
+        .sub(
+            skeletonCenter
+        )
+    );
 }
 
 
@@ -1451,21 +1396,20 @@ function alignModels(){
    MUSKEL-LISTE
 ===================================================== */
 
-function buildMuscleList(){
+function buildMuscleList() {
 
     const list =
         document.getElementById(
             "muscle-list"
         );
 
-
-    list.innerHTML="";
-
+    list.innerHTML = "";
 
     const search =
         document.getElementById(
             "search"
-        ).value
+        )
+        .value
         .toLowerCase()
         .trim();
 
@@ -1474,36 +1418,44 @@ function buildMuscleList(){
         new Map();
 
 
-    for(const mesh of modelMeshes){
+    for (
+        const mesh
+        of anatomyMeshes
+    ) {
 
-        if(!mesh.userData.important){
-            continue;
-        }
-
-
-        if(
+        if (
             currentRegion !== "all" &&
-            mesh.userData.region !== currentRegion
-        ){
+            mesh.userData.region !==
+            currentRegion
+        ) {
             continue;
         }
 
 
         const name =
-            mesh.userData.displayName;
+            mesh.userData.name;
 
 
-        if(
+        if (
             search &&
             !name
                 .toLowerCase()
                 .includes(search)
-        ){
+        ) {
             continue;
         }
 
 
-        if(!unique.has(name)){
+        if (
+            name === "Muskel"
+        ) {
+            continue;
+        }
+
+
+        if (
+            !unique.has(name)
+        ) {
             unique.set(
                 name,
                 mesh
@@ -1514,53 +1466,51 @@ function buildMuscleList(){
 
 
     document.getElementById(
-        "muscle-count"
+        "panel-count"
     ).textContent =
-        unique.size+
-        (unique.size===1
-            ?" Muskel"
-            :" Muskeln");
+        unique.size +
+        " Muskeln";
 
 
-    for(
-        const [name,mesh]
-        of unique
-    ){
+    unique.forEach(
+        function(mesh, name) {
 
-        const item =
-            document.createElement(
-                "div"
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+            item.className =
+                "muscle";
+
+            item.textContent =
+                name;
+
+            if (
+                selected &&
+                selected.userData.name ===
+                name
+            ) {
+                item.classList.add(
+                    "selected"
+                );
+            }
+
+            item.onclick =
+                function() {
+
+                    selectMuscle(
+                        mesh
+                    );
+
+                };
+
+            list.appendChild(
+                item
             );
 
-
-        item.className =
-            "muscle-item";
-
-
-        item.textContent =
-            name;
-
-
-        if(
-            selectedMesh &&
-            selectedMesh.userData.displayName === name
-        ){
-            item.classList.add(
-                "active"
-            );
         }
-
-
-        item.onclick =
-            ()=>selectMesh(mesh);
-
-
-        list.appendChild(
-            item
-        );
-
-    }
-
+    );
 }
 
 
@@ -1568,31 +1518,28 @@ function buildMuscleList(){
    MUSKEL AUSWÄHLEN
 ===================================================== */
 
-function selectMesh(mesh){
+function selectMuscle(mesh) {
 
-    selectedMesh =
+    resetMaterials();
+
+    selected =
         mesh;
 
 
-    restoreMuscles();
-
-
     mesh.material.color.set(
-        0xf0a0a6
+        0xf0a0a5
     );
-
 
     mesh.material.emissive.set(
         0x42151a
     );
 
-
     mesh.material.emissiveIntensity =
-        .45;
+        0.5;
 
 
     document.getElementById(
-        "detail-panel"
+        "detail"
     ).style.display =
         "block";
 
@@ -1600,18 +1547,26 @@ function selectMesh(mesh){
     document.getElementById(
         "detail-name"
     ).textContent =
-        mesh.userData.displayName;
+        mesh.userData.name;
 
 
-    const regionNames = {
+    const regions = {
 
-        chest:"Brust",
-        back:"Rücken",
-        shoulders:"Schultern",
-        arms:"Arme",
-        abs:"Bauch",
-        legs:"Beine",
-        glutes:"Gesäß"
+        chest: "Brust",
+
+        back: "Rücken",
+
+        shoulders: "Schultern",
+
+        arms: "Arme",
+
+        abs: "Bauch",
+
+        legs: "Beine",
+
+        glutes: "Gesäß",
+
+        all: "Körper"
 
     };
 
@@ -1619,70 +1574,33 @@ function selectMesh(mesh){
     document.getElementById(
         "detail-region"
     ).textContent =
-        regionNames[
+        regions[
             mesh.userData.region
-        ] || "Körper";
-
-
-    const list =
-        document.getElementById(
-            "exercise-list"
-        );
-
-
-    list.innerHTML="";
-
-
-    (
-        exercises[
-            mesh.userData.region
-        ] || []
-    ).forEach(
-        exercise=>{
-
-            const div =
-                document.createElement(
-                    "div"
-                );
-
-
-            div.className =
-                "exercise";
-
-
-            div.textContent =
-                exercise;
-
-
-            list.appendChild(
-                div
-            );
-
-        }
-    );
+        ];
 
 
     buildMuscleList();
 
-
-    focusMesh(
+    focusMuscle(
         mesh
     );
-
 }
 
 
 /* =====================================================
-   MUSKELN ZURÜCKSETZEN
+   MATERIALIEN ZURÜCKSETZEN
 ===================================================== */
 
-function restoreMuscles(){
+function resetMaterials() {
 
-    modelMeshes.forEach(
-        mesh=>{
+    anatomyMeshes.forEach(
+        function(mesh) {
+
+            mesh.visible =
+                true;
 
             mesh.material.color.set(
-                0xb86167
+                0xb85f66
             );
 
             mesh.material.emissive.set(
@@ -1693,54 +1611,58 @@ function restoreMuscles(){
                 0;
 
             mesh.material.transparent =
-                skeletonVisible;
+                skeletonOn;
 
             mesh.material.opacity =
-                skeletonVisible
-                    ?0.82
-                    :1;
+                skeletonOn
+                    ? 0.72
+                    : 1;
 
             mesh.material.depthWrite =
-                !skeletonVisible;
+                !skeletonOn;
 
         }
     );
-
 }
 
 
 /* =====================================================
-   SKELETT
+   SKELETT BUTTON
 ===================================================== */
 
-function toggleSkeleton(){
+document.getElementById(
+    "skeleton-button"
+).onclick =
+function() {
 
-    if(!skeletonModel){
+    if (!skeleton) {
+
         alert(
-            "skeleton.glb konnte nicht geladen werden."
+            "skeleton.glb wurde nicht geladen. Bitte überprüfe, dass skeleton.glb direkt neben index.html liegt."
         );
+
         return;
     }
 
 
-    skeletonVisible =
-        !skeletonVisible;
+    skeletonOn =
+        !skeletonOn;
 
 
-    skeletonModel.visible =
-        skeletonVisible;
+    skeleton.visible =
+        skeletonOn;
 
 
-    if(skeletonVisible){
+    if (skeletonOn) {
 
-        modelMeshes.forEach(
-            mesh=>{
+        anatomyMeshes.forEach(
+            function(mesh) {
 
                 mesh.material.transparent =
                     true;
 
                 mesh.material.opacity =
-                    .82;
+                    0.72;
 
                 mesh.material.depthWrite =
                     false;
@@ -1748,45 +1670,36 @@ function toggleSkeleton(){
             }
         );
 
-    }else{
+    } else {
 
-        restoreMuscles();
+        resetMaterials();
 
     }
 
 
-    const button =
-        document.getElementById(
-            "skeletonBtn"
+    document
+        .getElementById(
+            "skeleton-button"
+        )
+        .classList.toggle(
+            "active",
+            skeletonOn
         );
 
-
-    button.classList.toggle(
-        "active",
-        skeletonVisible
-    );
-
-
-    button.textContent =
-        skeletonVisible
-            ?"Skelett an"
-            :"Skelett";
-
-}
+};
 
 
 /* =====================================================
    FOKUS
 ===================================================== */
 
-function focusMesh(mesh){
+function focusMuscle(mesh) {
 
     const box =
         new THREE.Box3()
         .setFromObject(
             mesh
         );
-
 
     const center =
         new THREE.Vector3();
@@ -1795,7 +1708,6 @@ function focusMesh(mesh){
         center
     );
 
-
     const size =
         new THREE.Vector3();
 
@@ -1803,33 +1715,29 @@ function focusMesh(mesh){
         size
     );
 
-
     const distance =
         Math.max(
             size.x,
             size.y,
             size.z
-        )*4;
+        ) * 4;
 
 
     camera.position.set(
         center.x,
         center.y,
-        center.z+
+        center.z +
         Math.max(
             distance,
             1
         )
     );
 
-
     controls.target.copy(
         center
     );
 
-
     controls.update();
-
 }
 
 
@@ -1837,160 +1745,202 @@ function focusMesh(mesh){
    ISOLIEREN
 ===================================================== */
 
-function isolateSelected(){
+document.getElementById(
+    "isolate"
+).onclick =
+function() {
 
-    if(!selectedMesh){
+    if (!selected) {
         return;
     }
 
+    anatomyMeshes.forEach(
+        function(mesh) {
 
-    modelMeshes.forEach(
-        mesh=>{
+            if (
+                mesh === selected
+            ) {
 
-            if(mesh===selectedMesh){
-
-                mesh.material.transparent =
-                    false;
+                mesh.visible =
+                    true;
 
                 mesh.material.opacity =
                     1;
 
-            }else{
+            } else {
 
                 mesh.material.transparent =
                     true;
 
                 mesh.material.opacity =
-                    .06;
+                    0.04;
 
             }
 
         }
     );
 
-}
+};
 
 
 /* =====================================================
    DURCHSICHTIG
 ===================================================== */
 
-function transparentSelected(){
+document.getElementById(
+    "transparent"
+).onclick =
+function() {
 
-    if(!selectedMesh){
+    if (!selected) {
         return;
     }
 
-
-    selectedMesh.material.transparent =
+    selected.material.transparent =
         true;
 
-    selectedMesh.material.opacity =
-        .08;
+    selected.material.opacity =
+        0.15;
 
-}
+};
 
 
 /* =====================================================
-   ALLES
+   ALLES ZEIGEN
 ===================================================== */
 
-function showAll(){
+document.getElementById(
+    "show-all"
+).onclick =
+function() {
 
-    modelMeshes.forEach(
-        mesh=>{
-            mesh.visible=true;
-        }
-    );
+    selected =
+        null;
 
-
-    selectedMesh=null;
-
+    resetMaterials();
 
     document.getElementById(
-        "detail-panel"
+        "detail"
     ).style.display =
         "none";
 
-
-    restoreMuscles();
-
     buildMuscleList();
 
-}
+};
 
 
 /* =====================================================
    ANSICHTEN
 ===================================================== */
 
-function front(){
+document.getElementById(
+    "front"
+).onclick =
+function() {
 
     camera.position.set(
-        0,0,7
+        0,
+        0,
+        7
     );
 
     controls.target.set(
-        0,0,0
+        0,
+        0,
+        0
     );
 
     controls.update();
 
-}
+};
 
 
-function back(){
+document.getElementById(
+    "back"
+).onclick =
+function() {
 
     camera.position.set(
-        0,0,-7
+        0,
+        0,
+        -7
     );
 
     controls.target.set(
-        0,0,0
+        0,
+        0,
+        0
     );
 
     controls.update();
 
-}
+};
 
 
-function side(){
+document.getElementById(
+    "side"
+).onclick =
+function() {
 
     camera.position.set(
-        7,0,0
+        7,
+        0,
+        0
     );
 
     controls.target.set(
-        0,0,0
+        0,
+        0,
+        0
     );
 
     controls.update();
 
-}
+};
 
 
-function reset(){
+document.getElementById(
+    "reset"
+).onclick =
+function() {
 
-    showAll();
+    selected =
+        null;
+
+    resetMaterials();
+
+    document.getElementById(
+        "detail"
+    ).style.display =
+        "none";
 
     camera.position.set(
-        0,0,7
+        0,
+        0,
+        7
     );
 
     controls.target.set(
-        0,0,0
+        0,
+        0,
+        0
     );
 
     controls.update();
 
-}
+    buildMuscleList();
+
+};
 
 
 /* =====================================================
    ZOOM
 ===================================================== */
 
-function zoom(factor){
+document.getElementById(
+    "zoom-in"
+).onclick =
+function() {
 
     const direction =
         new THREE.Vector3()
@@ -2000,159 +1950,77 @@ function zoom(factor){
         )
         .normalize();
 
+    const distance =
+        camera.position.distanceTo(
+            controls.target
+        );
+
+    const newDistance =
+        Math.max(
+            distance * 0.7,
+            0.2
+        );
+
+    camera.position.copy(
+        controls.target
+            .clone()
+            .add(
+                direction.multiplyScalar(
+                    newDistance
+                )
+            )
+    );
+
+};
+
+
+document.getElementById(
+    "zoom-out"
+).onclick =
+function() {
+
+    const direction =
+        new THREE.Vector3()
+        .subVectors(
+            camera.position,
+            controls.target
+        )
+        .normalize();
 
     const distance =
         camera.position.distanceTo(
             controls.target
         );
 
-
     const newDistance =
         Math.min(
-            Math.max(
-                distance*factor,
-                .1
-            ),
+            distance * 1.4,
             100
         );
 
-
     camera.position.copy(
         controls.target
-        .clone()
-        .add(
-            direction.multiplyScalar(
-                newDistance
+            .clone()
+            .add(
+                direction.multiplyScalar(
+                    newDistance
+                )
             )
-        );
+    );
 
-}
+};
 
 
 /* =====================================================
-   LABELS
+   SUCHE
 ===================================================== */
 
-const labels = new Map();
-
-
-function createLabels(){
-
-    for(const mesh of modelMeshes){
-
-        if(!mesh.userData.important){
-            continue;
-        }
-
-
-        const label =
-            document.createElement(
-                "div"
-            );
-
-
-        label.className =
-            "muscle-label";
-
-
-        label.textContent =
-            mesh.userData.displayName;
-
-
-        viewer.appendChild(
-            label
-        );
-
-
-        labels.set(
-            mesh,
-            label
-        );
-
-    }
-
-}
-
-
-function updateLabels(){
-
-    labels.forEach(
-        (label,mesh)=>{
-
-            if(
-                !labelsVisible ||
-                !mesh.visible
-            ){
-
-                label.classList.remove(
-                    "visible"
-                );
-
-                return;
-
-            }
-
-
-            const box =
-                new THREE.Box3()
-                .setFromObject(
-                    mesh
-                );
-
-
-            const center =
-                new THREE.Vector3();
-
-
-            box.getCenter(
-                center
-            );
-
-
-            const p =
-                center.clone()
-                .project(camera);
-
-
-            if(p.z>1){
-
-                label.classList.remove(
-                    "visible"
-                );
-
-                return;
-
-            }
-
-
-            label.style.left =
-                (
-                    (p.x*.5+.5)*
-                    viewer.clientWidth
-                )+"px";
-
-
-            label.style.top =
-                (
-                    (-p.y*.5+.5)*
-                    viewer.clientHeight
-                )+"px";
-
-
-            label.classList.add(
-                "visible"
-            );
-
-
-            label.classList.toggle(
-                "selected",
-                mesh===selectedMesh
-            );
-
-        }
-    );
-
-}
+document.getElementById(
+    "search"
+).addEventListener(
+    "input",
+    buildMuscleList
+);
 
 
 /* =====================================================
@@ -2160,253 +2028,151 @@ function updateLabels(){
 ===================================================== */
 
 document.querySelectorAll(
-    ".region-btn"
+    ".region"
 ).forEach(
-    button=>{
+    function(button) {
 
         button.onclick =
-            ()=>{
+        function() {
 
-                document.querySelectorAll(
-                    ".region-btn"
-                ).forEach(
-                    b=>{
-                        b.classList.remove(
-                            "active"
-                        );
-                    }
-                );
+            document.querySelectorAll(
+                ".region"
+            ).forEach(
+                function(b) {
 
+                    b.classList.remove(
+                        "active"
+                    );
 
-                button.classList.add(
-                    "active"
-                );
+                }
+            );
 
 
-                currentRegion =
-                    button.dataset.region;
+            button.classList.add(
+                "active"
+            );
 
 
-                const regionNames = {
-
-                    all:"Ganzkörper",
-                    chest:"Brust",
-                    back:"Rücken",
-                    shoulders:"Schultern",
-                    arms:"Arme",
-                    abs:"Bauch",
-                    legs:"Beine",
-                    glutes:"Gesäß"
-
-                };
+            currentRegion =
+                button.dataset.region;
 
 
-                document.getElementById(
-                    "panel-title"
-                ).textContent =
-                    regionNames[
-                        currentRegion
-                    ];
+            const names = {
 
+                all: "Ganzkörper",
 
-                buildMuscleList();
+                chest: "Brust",
+
+                back: "Rücken",
+
+                shoulders: "Schultern",
+
+                arms: "Arme",
+
+                abs: "Bauch",
+
+                legs: "Beine",
+
+                glutes: "Gesäß"
 
             };
+
+
+            document.getElementById(
+                "panel-title"
+            ).textContent =
+                names[
+                    currentRegion
+                ];
+
+
+            buildMuscleList();
+
+        };
 
     }
 );
 
 
 /* =====================================================
-   EVENTS
-===================================================== */
-
-document.getElementById(
-    "search"
-).oninput =
-    buildMuscleList;
-
-
-document.getElementById(
-    "skeletonBtn"
-).onclick =
-    toggleSkeleton;
-
-
-document.getElementById(
-    "frontBtn"
-).onclick =
-    front;
-
-
-document.getElementById(
-    "backBtn"
-).onclick =
-    back;
-
-
-document.getElementById(
-    "sideBtn"
-).onclick =
-    side;
-
-
-document.getElementById(
-    "resetBtn"
-).onclick =
-    reset;
-
-
-document.getElementById(
-    "zoomInBtn"
-).onclick =
-    ()=>zoom(.7);
-
-
-document.getElementById(
-    "zoomOutBtn"
-).onclick =
-    ()=>zoom(1.4);
-
-
-document.getElementById(
-    "labelsBtn"
-).onclick =
-    ()=>{
-
-        labelsVisible =
-            !labelsVisible;
-
-
-        document.getElementById(
-            "labelsBtn"
-        ).classList.toggle(
-            "active",
-            labelsVisible
-        );
-
-    };
-
-
-document.getElementById(
-    "focusBtn"
-).onclick =
-    ()=>{
-        if(selectedMesh){
-            focusMesh(
-                selectedMesh
-            );
-        }
-    };
-
-
-document.getElementById(
-    "isolateBtn"
-).onclick =
-    isolateSelected;
-
-
-document.getElementById(
-    "transparentBtn"
-).onclick =
-    transparentSelected;
-
-
-document.getElementById(
-    "showAllBtn"
-).onclick =
-    showAll;
-
-
-document.getElementById(
-    "mobile-menu"
-).onclick =
-    ()=>{
-        document.getElementById(
-            "sidebar"
-        ).classList.toggle(
-            "open"
-        );
-    };
-
-
-/* =====================================================
-   DOPPELKLICK AUF MUSKEL
+   DOPPELKLICK
 ===================================================== */
 
 const raycaster =
     new THREE.Raycaster();
 
-const pointer =
+const mouse =
     new THREE.Vector2();
 
 
 renderer.domElement.addEventListener(
     "dblclick",
-    event=>{
+    function(event) {
 
         const rect =
             renderer.domElement
             .getBoundingClientRect();
 
 
-        pointer.x =
+        mouse.x =
             (
-                (event.clientX-rect.left)/
+                (event.clientX -
+                 rect.left) /
                 rect.width
-            )*2-1;
+            ) * 2 - 1;
 
 
-        pointer.y =
+        mouse.y =
             -(
-                (event.clientY-rect.top)/
+                (event.clientY -
+                 rect.top) /
                 rect.height
-            )*2+1;
+            ) * 2 + 1;
 
 
         raycaster.setFromCamera(
-            pointer,
+            mouse,
             camera
         );
 
 
         const hits =
             raycaster.intersectObjects(
-                modelMeshes.filter(
-                    mesh=>mesh.visible
-                ),
+                anatomyMeshes,
                 true
             );
 
 
-        if(!hits.length){
-            return;
-        }
+        if (
+            hits.length > 0
+        ) {
 
+            selectMuscle(
+                hits[0].object
+            );
 
-        let mesh =
-            hits[0].object;
-
-
-        while(
-            mesh &&
-            !mesh.userData.displayName &&
-            mesh.parent
-        ){
-            mesh =
-                mesh.parent;
-        }
-
-
-        if(
-            mesh &&
-            mesh.userData.displayName
-        ){
-            selectMesh(mesh);
         }
 
     }
 );
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+document.getElementById(
+    "mobile-menu"
+).onclick =
+function() {
+
+    document.getElementById(
+        "sidebar"
+    ).classList.toggle(
+        "open"
+    );
+
+};
 
 
 /* =====================================================
@@ -2415,15 +2181,13 @@ renderer.domElement.addEventListener(
 
 window.addEventListener(
     "resize",
-    ()=>{
+    function() {
 
         camera.aspect =
             viewer.clientWidth /
             viewer.clientHeight;
 
-
         camera.updateProjectionMatrix();
-
 
         renderer.setSize(
             viewer.clientWidth,
@@ -2438,17 +2202,13 @@ window.addEventListener(
    RENDER
 ===================================================== */
 
-function animate(){
+function animate() {
 
     requestAnimationFrame(
         animate
     );
 
-
     controls.update();
-
-    updateLabels();
-
 
     renderer.render(
         scene,
@@ -2457,7 +2217,6 @@ function animate(){
 
 }
 
-
 animate();
 
 
@@ -2465,44 +2224,58 @@ animate();
    START
 ===================================================== */
 
-async function start(){
+async function start() {
 
-    try{
+    try {
 
         document.getElementById(
-            "loadingText"
+            "loading-text"
         ).textContent =
             "Anatomie wird geladen...";
 
 
+        /*
+           1. Anatomie zuerst.
+           Wenn diese funktioniert,
+           wird sie sofort sichtbar.
+        */
+
         await loadAnatomy();
 
 
+        fitAnatomy();
+
+
+        /*
+           Jetzt ist die Anatomie bereits
+           korrekt auf dem Bildschirm.
+        */
+
         document.getElementById(
-            "loadingText"
+            "loading-text"
         ).textContent =
             "Skelett wird geladen...";
 
+
+        /*
+           2. Skelett separat.
+           Ein Fehler hier zerstört NICHT
+           die Anatomie.
+        */
 
         await loadSkeleton();
 
 
         /*
-            JETZT kommt der entscheidende
-            gemeinsame Alignment-Schritt.
+           3. Skelett an Anatomie ausrichten.
         */
 
-        if(
-            anatomyModel &&
-            skeletonModel
-        ){
-
-            alignModels();
-
-        }
+        fitSkeleton();
 
 
-        createLabels();
+        /*
+           4. Oberfläche.
+        */
 
         buildMuscleList();
 
@@ -2513,70 +2286,67 @@ async function start(){
             7
         );
 
-
         controls.target.set(
             0,
             0,
             0
         );
 
-
         controls.update();
 
 
-        document.getElementById(
-            "loadingText"
-        ).textContent =
-            "Fertig";
+        /*
+           Loading entfernen.
+        */
 
+        const loading =
+            document.getElementById(
+                "loading"
+            );
+
+        loading.style.opacity =
+            "0";
 
         setTimeout(
-            ()=>{
-                const loading =
-                    document.getElementById(
-                        "loading"
-                    );
+            function() {
 
-                loading.style.opacity =
-                    "0";
-
-
-                setTimeout(
-                    ()=>{
-                        loading.style.display =
-                            "none";
-                    },
-                    450
-                );
+                loading.style.display =
+                    "none";
 
             },
-            200
+            400
         );
 
 
-    }catch(error){
+    } catch (error) {
 
-        console.error(error);
+        console.error(
+            "START ERROR:",
+            error
+        );
 
+
+        /*
+           Falls anatomy.glb selbst
+           nicht geladen werden kann,
+           zeigen wir den echten Fehler
+           statt ewig "Laden" anzuzeigen.
+        */
 
         document.getElementById(
-            "loadingText"
+            "loading-text"
         ).textContent =
             "Fehler beim Laden";
 
 
-        const errorBox =
-            document.getElementById(
-                "error-box"
-            );
+        document.getElementById(
+            "progress-bar"
+        ).style.width =
+            "100%";
 
-
-        errorBox.style.display =
-            "block";
-
-
-        errorBox.textContent =
-            "anatomy.glb oder skeleton.glb konnte nicht geladen werden. Bitte überprüfe, dass beide Dateien direkt neben index.html liegen.";
+        alert(
+            "anatomy.glb konnte nicht geladen werden. Bitte überprüfe, dass anatomy.glb direkt neben index.html liegt."
+        );
 
     }
 
